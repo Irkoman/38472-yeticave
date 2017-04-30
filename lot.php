@@ -12,11 +12,11 @@ function formatTime($ts) {
         $hoursPassed = (time() - $ts) / 3600;
 
         if ($hoursPassed >= 24) {
-            return date('d.m.y' . ' в ' . 'H:i', $ts);
+            return date('d.m.y в H:i', $ts);
         } elseif ($hoursPassed < 1) {
-            return date('i' . ' минут назад');
+            return date('i минут назад');
         } else {
-            return date('H' . ' часов назад');
+            return date('H часов назад');
         };
     } else {
         return 'Неизвестно';
@@ -127,9 +127,9 @@ function formatTime($ts) {
                     <table class="history__list">
                         <?php foreach ($bets as $bet): ?>
                         <tr class="history__item">
-                            <td class="history__name"><?=$bet['name'];?></td>
-                            <td class="history__price"><?=$bet['price'];?></td>
-                            <td class="history__time"><?=formatTime($bet['ts']);?></td>
+                            <td class="history__name"><?= $bet['name'] ?></td>
+                            <td class="history__price"><?= $bet['price'] ?></td>
+                            <td class="history__time"><?= formatTime($bet['ts']) ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </table>
