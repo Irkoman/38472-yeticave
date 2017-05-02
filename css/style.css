@@ -1230,3 +1230,13 @@ h2 {
 .rates__item--end {
   opacity: 0.4;
 }
+
+.not-found {
+  font-size: 2em;
+  text-align: center;
+  color: #25434e;
+}
+
+.not-found__title {
+  font-size: 7em;
+}
