@@ -37,4 +37,9 @@ function formatTime(int $ts) {
     return date('H часов назад');
   };
 }
+
+function validateDate($string) {
+  $date = date_create($string);
+  return $date && date_format($date, 'd.m.Y');
+}
 ?>
