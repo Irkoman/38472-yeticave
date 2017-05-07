@@ -971,6 +971,7 @@ h2 {
 }
 
 .lot-item__state {
+  margin-bottom: 34px;
   padding: 30px;
   background-color: #ffffff;
 }
@@ -1055,10 +1056,6 @@ h2 {
 }
 
 /* История ставок */
-
-.history {
-  margin-top: 34px;
-}
 
 .history h3 {
   margin: 0;
@@ -1231,12 +1228,14 @@ h2 {
   opacity: 0.4;
 }
 
-.not-found {
+.error {
   font-size: 2em;
+  line-height: 1.1;
   text-align: center;
   color: #25434e;
 }
 
-.not-found__title {
-  font-size: 7em;
+.error__title {
+  margin: 20px;
+  font-size: 6.5em;
 }

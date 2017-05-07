@@ -2,25 +2,17 @@
 require_once './functions.php';
 require_once './data.php';
 
+session_start();
+
+if (empty($_SESSION['user'])) {
+  header("HTTP/1.1 403 Forbidden");
+}
+
 $errors = [];
 $file = [];
 
 if (isset($_POST)) {
-  foreach ($_POST as $key => $value) {
-    $_POST[$key] = htmlspecialchars($value, ENT_QUOTES);
-
-    if (empty($value)) {
-      $errors[$key] = 'Заполните это поле';
-    }
-
-    if (in_array($key, ['lot-rate', 'lot-step']) && !is_numeric($value)) {
-      $errors[$key] = 'Здесь должно быть число';
-    }
-
-    if (in_array($key, ['lot-date']) && !validateDate($value)) {
-      $errors[$key] = 'Некорректная дата';
-    }
-  }
+  $errors = validateForm($_POST);
 
   if (isset($_FILES['lot-file'])) {
     $file = $_FILES['lot-file'];
@@ -56,10 +48,12 @@ if (isset($_POST)) {
 
 <?= includeTemplate('templates/header.php') ?>
 
-<?php if (empty($_POST) || !empty($errors)): ?>
-<?= includeTemplate('templates/add-lot.php', ['categories' => $categories, 'errors' => $errors, 'file' => $file]) ?>
+<?php if (empty($_SESSION['user'])): ?>
+<?= includeTemplate('templates/error-403.php') ?>
+<?php elseif (empty($_POST) || !empty($errors)): ?>
+<?= includeTemplate('templates/add.php', ['categories' => $categories, 'errors' => $errors, 'file' => $file]) ?>
 <?php else: ?>
-<?= includeTemplate('templates/main-lot.php', ['lot' => $lot, 'bets' => $bets]) ?>
+<?= includeTemplate('templates/lot.php', ['lot' => $lot, 'bets' => $bets]) ?>
 <?php endif; ?>
 
 <?= includeTemplate('templates/footer.php') ?>

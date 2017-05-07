@@ -42,4 +42,48 @@ function validateDate($string) {
   $date = date_create($string);
   return $date && date_format($date, 'd.m.Y');
 }
+
+function validateForm($post) {
+  $errors = [];
+
+  foreach ($post as $key => $value) {
+    $post[$key] = htmlspecialchars($value, ENT_QUOTES);
+
+    if (empty($value)) {
+      switch ($key) {
+        case 'email':
+          $errors[$key] = 'Введите e-mail';
+          break;
+        case 'password':
+          $errors[$key] = 'Введите пароль';
+          break;
+        default:
+          $errors[$key] = 'Заполните это поле';
+        }
+    } else {
+      if ($key =='lot-date' && !validateDate($value)) {
+        $errors[$key] = 'Некорректная дата';
+      }
+
+      if (in_array($key, ['lot-rate', 'lot-step']) && !is_numeric($value)) {
+        $errors[$key] = 'Здесь должно быть число';
+      }
+    }
+  }
+
+  return $errors;
+}
+
+function searchUserByEmail($email, $users) {
+  $result = null;
+
+  foreach ($users as $user) {
+    if ($user['email'] == $email) {
+      $result = $user;
+      break;
+    }
+  }
+
+  return $result;
+}
 ?>

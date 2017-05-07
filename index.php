@@ -1,7 +1,10 @@
 <?php
 require_once './functions.php';
 require_once './data.php';
+
+session_start();
 ?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -13,7 +16,7 @@ require_once './data.php';
 <body>
 
 <?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/main.php', ['categories' => $categories, 'lots' => $lots, 'lot_time_remaining' => calculateLotTime()]) ?>
+<?= includeTemplate('templates/lots.php', ['categories' => $categories, 'lots' => $lots, 'lot_time_remaining' => calculateLotTime()]) ?>
 <?= includeTemplate('templates/footer.php') ?>
 
 </body>

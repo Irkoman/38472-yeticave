@@ -2,6 +2,8 @@
 require_once './functions.php';
 require_once './data.php';
 
+session_start();
+
 $id = $_GET['id'];
 
 if (!isset($lots[$id])) {
@@ -24,9 +26,9 @@ if (!isset($lots[$id])) {
 <?= includeTemplate('templates/header.php') ?>
 
 <?php if (isset($lots[$id])): ?>
-<?= includeTemplate('templates/main-lot.php', ['lot' => $lot, 'bets' => $bets]) ?>
+<?= includeTemplate('templates/lot.php', ['lot' => $lot, 'bets' => $bets]) ?>
 <?php else: ?>
-<?= includeTemplate('templates/not-found.php') ?>
+<?= includeTemplate('templates/error-404.php') ?>
 <?php endif; ?>
 
 <?= includeTemplate('templates/footer.php') ?>
