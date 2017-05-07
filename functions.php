@@ -27,14 +27,15 @@ function calculateLotTime() {
 }
 
 function formatTime(int $ts) {
-  $hoursPassed = (time() - $ts) / 3600;
+  $time = time() - $ts;
+  $timeInHours = $time / 3600;
 
-  if ($hoursPassed >= 24) {
+  if ($timeInHours >= 24) {
     return date('d.m.y в H:i', $ts);
-  } elseif ($hoursPassed < 1) {
-    return date('i минут назад');
+  } elseif ($timeInHours < 1) {
+    return date('i минут назад', $time);
   } else {
-    return date('H часов назад');
+    return date('G часов назад', $time);
   };
 }
 
@@ -65,7 +66,7 @@ function validateForm($post) {
         $errors[$key] = 'Некорректная дата';
       }
 
-      if (in_array($key, ['lot-rate', 'lot-step']) && !is_numeric($value)) {
+      if (in_array($key, ['lot-rate', 'lot-step', 'cost']) && !is_numeric($value)) {
         $errors[$key] = 'Здесь должно быть число';
       }
     }
@@ -85,5 +86,25 @@ function searchUserByEmail($email, $users) {
   }
 
   return $result;
+}
+
+function getMyBetsFromCookies() {
+  $my_bets = [];
+
+  if (isset($_COOKIE['my_bets'])) {
+    $my_bets = json_decode($_COOKIE['my_bets'], true);
+  }
+
+  return $my_bets;
+}
+
+function isAlreadyBetted($id, $my_bets) {
+  foreach ($my_bets as $my_bet) {
+    if ($id == $my_bet['id']) {
+      return true;
+    }
+  }
+
+  return false;
 }
 ?>
