@@ -1,5 +1,8 @@
 <?php
 $lot = $data['lot'];
+$bets = $data['bets'];
+$errors = $data['errors'];
+$show_bet_form = $data['show_bet_form'];
 ?>
 
 <main>
@@ -50,19 +53,22 @@ $lot = $data['lot'];
               Мин. ставка <span>12 000 р</span>
             </div>
           </div>
-          <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post">
-            <p class="lot-item__form-item">
-              <label for="cost">Ваша ставка</label>
-              <input id="cost" type="number" name="cost" placeholder="12 000">
-            </p>
-            <button type="submit" class="button">Сделать ставку</button>
-          </form>
+          <?php if ($show_bet_form): ?>
+            <form class="lot-item__form" action="<?= $_SERVER['REQUEST_URI'] ?>" method="post">
+              <p class="lot-item__form-item <?= !empty($errors['cost']) ? 'form__item--invalid' : '' ?>">
+                <label for="cost">Ваша ставка</label>
+                <span class="form__error"><?= $errors['cost'] ?></span>
+                <input id="cost" type="number" name="cost" placeholder="12 000">
+              </p>
+              <button type="submit" class="button">Сделать ставку</button>
+            </form>
+          <?php endif; ?>
         </div>
       <?php endif; ?>
         <div class="history">
           <h3>История ставок (<span>4</span>)</h3>
           <table class="history__list">
-            <?php foreach ($data['bets'] as $bet): ?>
+            <?php foreach ($bets as $bet): ?>
             <tr class="history__item">
               <td class="history__name"><?= $bet['name'] ?></td>
               <td class="history__price"><?= $bet['price'] ?></td>
