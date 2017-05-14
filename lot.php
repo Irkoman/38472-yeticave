@@ -4,14 +4,24 @@ require_once './data.php';
 
 session_start();
 
-$id = $_GET['id'];
+$id = intval($_GET['id']);
+$lot = [];
 $errors = [];
 $my_bets = getMyBetsFromCookies();
+$link = connectDb();
 
-if (!isset($lots[$id])) {
-  header("HTTP/1.1 404 Not Found");
+if (!$link) {
+  print('Ошибка: ' . mysqli_connect_error());
 } else {
-  $lot = $lots[$id];
+  $sql = 'SELECT lot.id, lot.title, lot.description, lot.initial_rate, lot.image, category.name AS category
+    FROM lot JOIN category ON lot.category_id = category.id
+    WHERE lot.id ='
+    . $id;
+  $lot = selectData($link, $sql)[0];
+}
+
+if (empty($lot)) {
+  header("HTTP/1.1 404 Not Found");
 }
 
 if (isset($_POST['cost'])) {
@@ -42,7 +52,7 @@ if (isset($_POST['cost'])) {
 
 <?= includeTemplate('templates/header.php') ?>
 
-<?php if (isset($lots[$id])): ?>
+<?php if (!empty($lot)): ?>
 <?= includeTemplate('templates/lot.php', ['lot' => $lot, 'bets' => $bets, 'errors' => $errors, 'show_bet_form' => !isAlreadyBetted($id, $my_bets)]) ?>
 <?php else: ?>
 <?= includeTemplate('templates/error-404.php') ?>
