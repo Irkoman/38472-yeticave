@@ -1,4 +1,6 @@
 <?php
+require_once './mysql_helper.php';
+
 function includeTemplate($path, $data = []) {
   if (!file_exists($path)) {
     return '';
@@ -107,4 +109,67 @@ function isAlreadyBetted($id, $my_bets) {
 
   return false;
 }
-?>
+
+function connectDb() {
+  $link = mysqli_connect('localhost', 'root', '', 'yeticave');
+  return $link;
+}
+
+function selectData($link, $sql, $values = []) {
+  $rows = [];
+  $stmt = db_get_prepare_stmt($link, $sql, $values);
+  mysqli_stmt_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
+
+  if ($result) {
+    while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+      $rows[] = $row;
+    }
+  }
+
+  return $rows;
+}
+
+function insertData($link, $sql, $values = []) {
+  $stmt = db_get_prepare_stmt($link, $sql, $values);
+  mysqli_stmt_execute($stmt);
+  $last_id = mysqli_insert_id($link);
+
+  if ($last_id > 0) {
+    return $last_id;
+  } else {
+    return false;
+  }
+}
+
+function updateData($link, $table, $updates, $conditions) {
+  $updatesToString = "";
+  $conditionsToString = "";
+  $values = [];
+
+  foreach ($updates as $update) {
+    foreach ($update as $column => $value) {
+      $updatesToString .= "$column = ?, ";
+      $values[] = mysqli_real_escape_string($link, $value);
+    }
+  }
+
+  foreach ($conditions as $column => $value) {
+    $conditionsToString .= "$column = ? AND ";
+    $values[] = $value;
+  }
+
+  $updatesToString = substr($updatesToString, 0, -2);
+  $conditionsToString = substr($conditionsToString, 0, -5);
+  $sql = "UPDATE $table SET $updatesToString WHERE $conditionsToString;";
+
+  $stmt = db_get_prepare_stmt($link, $sql, $values);
+  mysqli_stmt_execute($stmt);
+  $rows_count = mysqli_stmt_affected_rows($stmt);
+
+  if ($rows_count > 0) {
+    return $rows_count;
+  } else {
+    return false;
+  }
+}
