@@ -1,8 +1,11 @@
 <?php
 require_once './functions.php';
-require_once './userdata.php';
 
 $errors = [];
+$link = connectDb();
+
+$sql = 'SELECT * FROM category';
+$categories = selectData($link, $sql);
 
 if (isset($_POST)) {
   $errors = validateForm($_POST);
@@ -12,7 +15,7 @@ if (!empty($_POST) && !$errors) {
   $email = $_POST['email'];
   $password = $_POST['password'];
 
-  if ($user = searchUserByEmail($email, $users)) {
+  if ($user = searchUserByEmail($link, $_POST['email'])) {
     if (password_verify($password, $user['password'])) {
       session_start();
       $_SESSION['user'] = $user;
@@ -38,8 +41,8 @@ if (!empty($_POST) && !$errors) {
 <body>
 
 <?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/login.php', ['errors' => $errors]) ?>
-<?= includeTemplate('templates/footer.php') ?>
+<?= includeTemplate('templates/login.php', ['categories' => $categories, 'errors' => $errors]) ?>
+<?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
 
 </body>
 </html>
