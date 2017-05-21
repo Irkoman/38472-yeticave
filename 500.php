@@ -16,7 +16,7 @@ require_once './functions.php';
 
 <div class="error">
   <h1 class="error__title">500</h1>
-  <p>Ошибка соединения</p>
+  <p>Ошибка обработки запроса</p>
 </div>
 
 <?= includeTemplate('templates/footer.php') ?>

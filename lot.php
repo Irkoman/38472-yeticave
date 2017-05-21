@@ -13,17 +13,14 @@ $link = connectDb();
 $sql = 'SELECT * FROM category';
 $categories = selectData($link, $sql);
 
-$sql = 'SELECT lot.id, lot.title, lot.description, lot.initial_rate, lot.image, category.name AS category
+$sql = "SELECT lot.id, lot.title, lot.description, lot.initial_rate, lot.image, category.name AS category
   FROM lot JOIN category ON lot.category_id = category.id
-  WHERE lot.id = '
-  . $id;
+  WHERE lot.id = $id";
 $lot = selectData($link, $sql)[0];
 
-$sql = 'SELECT bet.date_add, bet.rate, user.name AS user
+$sql = "SELECT bet.date_add, bet.rate, user.name AS user
   FROM bet JOIN user ON bet.user_id = user.id
-  WHERE bet.lot_id = '
-  . $id
-  . ' ORDER BY bet.date_add DESC LIMIT 5';
+  WHERE bet.lot_id = $id ORDER BY bet.date_add DESC LIMIT 5";
 $bets = selectData($link, $sql);
 
 if (empty($lot)) {
