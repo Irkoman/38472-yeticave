@@ -1,11 +1,9 @@
 <?php
-require_once './functions.php';
+require_once 'init.php';
 
-session_start();
-$link = connectDb();
-
-$sql = 'SELECT * FROM category';
-$categories = selectData($link, $sql);
+$database = new Database();
+$database->connect();
+$categories = $database->select('SELECT * FROM category');
 
 $sql = '
   SELECT lot.id, lot.title, lot.initial_rate, lot.image, category.name AS category
@@ -13,7 +11,7 @@ $sql = '
   WHERE lot.date_close > NOW() AND lot.winner_id IS NULL
   ORDER BY lot.date_add DESC LIMIT 6
 ';
-$lots = selectData($link, $sql);
+$lots = $database->select($sql);
 ?>
 
 <!DOCTYPE html>

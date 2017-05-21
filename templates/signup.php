@@ -13,7 +13,7 @@ $errors = $data['errors'];
       <?php endforeach; ?>
     </ul>
   </nav>
-  <form class="form container <?= !empty($errors) ? 'form--invalid' : '' ?>" action="sign-up.php" method="post" enctype="multipart/form-data">
+  <form class="form container <?= !empty($errors) ? 'form--invalid' : '' ?>" action="signup.php" method="post" enctype="multipart/form-data">
     <h2>Регистрация нового аккаунта</h2>
     <div class="form__item <?= !empty($errors['email']) ? 'form__item--invalid' : '' ?>">
       <label for="email">E-mail*</label>

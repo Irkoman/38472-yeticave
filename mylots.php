@@ -1,19 +1,19 @@
 <?php
-require_once './functions.php';
+require_once 'init.php';
 
-session_start();
+$user = new User();
 
-if (empty($_SESSION['user'])) {
+if (!$user->isAuth()) {
   header("HTTP/1.1 403 Forbidden");
   header('Location: /403.php');
 }
 
-$user_id = $_SESSION['user']['id'];
+$user_id = $user->getUserdata()['id'];
 $my_bets = getMyBetsFromCookies();
-$link = connectDb();
 
-$sql = 'SELECT * FROM category';
-$categories = selectData($link, $sql);
+$database = new Database();
+$database->connect();
+$categories = $database->select('SELECT * FROM category');
 
 $sql = '
   SELECT bet.lot_id, bet.date_add, bet.rate, lot.title AS lot_title, lot.image AS lot_image, lot.date_add AS lot_completion_date, category.name AS category
@@ -22,7 +22,7 @@ $sql = '
   JOIN category ON category.id = lot.category_id
   WHERE bet.user_id = ?
 ';
-$my_bets = selectData($link, $sql, [$user_id]);
+$my_bets = $database->select($sql, [$user_id]);
 ?>
 
 <!DOCTYPE html>

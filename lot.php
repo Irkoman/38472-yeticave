@@ -1,54 +1,59 @@
 <?php
-require_once './functions.php';
-
-session_start();
+require_once 'init.php';
 
 $id = intval($_GET['id']);
 $lot = [];
 $bets = [];
 $errors = [];
 $my_bets = getMyBetsFromCookies();
-$link = connectDb();
 
-$sql = 'SELECT * FROM category';
-$categories = selectData($link, $sql);
+$database = new Database();
+$database->connect();
+$categories = $database->select('SELECT * FROM category');
 
 $sql = "SELECT lot.id, lot.title, lot.description, lot.initial_rate, lot.image, category.name AS category
   FROM lot JOIN category ON lot.category_id = category.id
   WHERE lot.id = $id";
-$lot = selectData($link, $sql)[0];
+$lot = $database->select($sql)[0];
 
 $sql = "SELECT bet.date_add, bet.rate, user.name AS user
   FROM bet JOIN user ON bet.user_id = user.id
   WHERE bet.lot_id = $id ORDER BY bet.date_add DESC LIMIT 5";
-$bets = selectData($link, $sql);
+$bets = $database->select($sql);
 
 if (empty($lot)) {
   header("HTTP/1.1 404 Not Found");
   header("Location: /404.php");
 }
 
-if (isset($_POST['cost'])) {
-  $errors = validateForm($_POST);
+$user = new User();
+$form = new BetForm();
 
-  if (empty($errors)) {
-    $data = [
-      $id,
-      $_SESSION['user']['id'],
-      date('Y-m-d H:i:s'),
-      $_POST['cost']
-    ];
+if ($form->isSubmitted()) {
+  $form->validate();
+  $errors = $form->getAllErrors();
 
-    $my_bets[] = $data;
-    setcookie("my_bets", json_encode($my_bets), strtotime("+1 month"));
-    $sql = 'INSERT INTO bet (lot_id, user_id, date_add, rate) VALUES (?, ?, ?, ?)';
-    $bet_id = insertData($link, $sql, $data);
+  if ($form->isValid()) {
+    $formdata = $form->getFormdata();
 
-    if ($bet_id) {
-      header("Location: /mylots.php");
-    } else {
-      header('HTTP/1.1 500 Internal Server Error');
-      header('Location: /500.php');
+    if (empty($errors)) {
+      $data = [
+        $id,
+        $user->getUserdata()['id'],
+        $formdata['cost']
+      ];
+
+      $my_bets[] = $data;
+      setcookie("my_bets", json_encode($my_bets), strtotime("+1 month"));
+      $sql = 'INSERT INTO bet (date_add, lot_id, user_id, rate) VALUES (NOW(), ?, ?, ?)';
+      $bet_id = $database->insert($sql, $data);
+
+      if ($bet_id) {
+        header("Location: /mylots.php");
+      } else {
+        header('HTTP/1.1 500 Internal Server Error');
+        header('Location: /500.php');
+      }
     }
   }
 }

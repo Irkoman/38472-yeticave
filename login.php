@@ -1,31 +1,22 @@
 <?php
-require_once './functions.php';
+require_once 'init.php';
 
 $errors = [];
-$link = connectDb();
 
-$sql = 'SELECT * FROM category';
-$categories = selectData($link, $sql);
+$database = new Database();
+$database->connect();
+$categories = $database->select('SELECT * FROM category');
 
-if (isset($_POST)) {
-  $errors = validateForm($_POST);
-}
+$form = new LoginForm();
 
-if (!empty($_POST) && !$errors) {
-  $email = $_POST['email'];
-  $password = $_POST['password'];
+if ($form->isSubmitted()) {
+  $form->validate();
+  $errors = $form->getAllErrors();
 
-  if ($user = searchUserByEmail($link, $_POST['email'])) {
-    if (password_verify($password, $user['password'])) {
-      session_start();
-      $_SESSION['user'] = $user;
-      header("Location: /index.php");
-    }
-    else {
-      $errors['password'] = 'Вы ввели неверный пароль';
-    }
-  } else {
-    $errors['email'] = 'Почта не найдена';
+  if ($form->isValid()) {
+    $formdata = $form->getFormdata();
+    $user = new User($database, $formdata['email'], $formdata['password']);
+    $errors = $user->authErrors;
   }
 }
 ?>

@@ -1,53 +1,48 @@
 <?php
-require_once './functions.php';
+require_once 'init.php';
 
-session_start();
+$user = new User();
 
-if (empty($_SESSION['user'])) {
+if (!$user->isAuth()) {
   header('HTTP/1.1 403 Forbidden');
   header('Location: /403.php');
 }
 
 $errors = [];
 $file = [];
-$link = connectDb();
 
-$sql = 'SELECT * FROM category';
-$categories = selectData($link, $sql);
+$database = new Database();
+$database->connect();
+$categories = $database->select('SELECT * FROM category');
 
-if (!empty($_POST)) {
-  $errors = validateForm($_POST);
+$form = new LotForm();
 
-  if (isset($_FILES['lot-file'])) {
-    $file = $_FILES['lot-file'];
+if ($form->isSubmitted()) {
+  $form->validate();
+  $errors = $form->getAllErrors();
 
-    if ($file['type'] == 'image/jpeg') {
-      move_uploaded_file($file['tmp_name'], 'img/' . $file['name']);
-    } else {
-      $errors['lot-file'] = 'Загрузите фото в формате jpeg';
-    }
-  }
+  if ($form->isValid()) {
+    $formdata = $form->getFormdata();
+    $lot_file = $formdata['lot-file'];
+    move_uploaded_file($lot_file['tmp_name'], 'img/' . $lot_file['name']);
 
-  if (empty($errors)) {
     $data = [
-      $_POST['category'],
-      $_SESSION['user']['id'],
-      date('Y-m-d H:i:s'),
-      date('Y-m-d H:i:s', strtotime($_POST['lot-date'])),
-      $_POST['lot-name'],
-      $_POST['message'],
-      'img/' . $file['name'],
-      $_POST['lot-rate'],
-      $_POST['lot-step'],
-      0
+      date('Y-m-d H:i:s', strtotime($formdata['lot-date'])),
+      $formdata['category'],
+      $user->getUserdata()['id'],
+      $formdata['lot-name'],
+      $formdata['message'],
+      'img/' . $lot_file['name'],
+      $formdata['lot-rate'],
+      $formdata['lot-step']
     ];
 
     $sql = '
       INSERT INTO lot
-      (category_id, user_id, date_add, date_close, title, description, image, initial_rate, rate_step, fav_count)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (date_add, date_close, category_id, user_id, title, description, image, initial_rate, rate_step, fav_count)
+      VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, 0)
     ';
-    $lot_id = insertData($link, $sql, $data);
+    $lot_id = $database->insert($sql, $data);
 
     if ($lot_id) {
       header("Location: /lot.php?id=" . $lot_id);
