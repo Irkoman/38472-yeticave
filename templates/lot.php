@@ -3,29 +3,17 @@ $lot = $data['lot'];
 $bets = $data['bets'];
 $errors = $data['errors'];
 $show_bet_form = $data['show_bet_form'];
+$categories = $data['categories'];
 ?>
 
 <main>
   <nav class="nav">
     <ul class="nav__list container">
-      <li class="nav__item">
-        <a href="">Доски и лыжи</a>
-      </li>
-      <li class="nav__item">
-        <a href="">Крепления</a>
-      </li>
-      <li class="nav__item">
-        <a href="">Ботинки</a>
-      </li>
-      <li class="nav__item">
-        <a href="">Одежда</a>
-      </li>
-      <li class="nav__item">
-        <a href="">Инструменты</a>
-      </li>
-      <li class="nav__item">
-        <a href="">Разное</a>
-      </li>
+      <?php foreach ($categories as $category): ?>
+        <li class="nav__item">
+          <a href="all-lots.html"><?= $category['name'] ?></a>
+        </li>
+      <?php endforeach; ?>
     </ul>
   </nav>
   <section class="lot-item container">
@@ -66,13 +54,13 @@ $show_bet_form = $data['show_bet_form'];
         </div>
       <?php endif; ?>
         <div class="history">
-          <h3>История ставок (<span>4</span>)</h3>
+          <h3>История ставок (<span><?= count($bets) ?></span>)</h3>
           <table class="history__list">
             <?php foreach ($bets as $bet): ?>
             <tr class="history__item">
-              <td class="history__name"><?= $bet['name'] ?></td>
-              <td class="history__price"><?= $bet['price'] ?></td>
-              <td class="history__time"><?= formatTime($bet['ts']) ?></td>
+              <td class="history__name"><?= $bet['user'] ?></td>
+              <td class="history__price"><?= $bet['rate'] ?></td>
+              <td class="history__time"><?= formatTime(strtotime($bet['date_add'])) ?></td>
             </tr>
             <?php endforeach; ?>
           </table>

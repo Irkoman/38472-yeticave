@@ -1,37 +1,55 @@
 <?php
-require_once './functions.php';
-require_once './data.php';
+require_once 'init.php';
 
-session_start();
+$user = new User();
 
-if (empty($_SESSION['user'])) {
-  header("HTTP/1.1 403 Forbidden");
+if (!$user->isAuth()) {
+  header('HTTP/1.1 403 Forbidden');
+  header('Location: /403.php');
 }
 
 $errors = [];
 $file = [];
 
-if (isset($_POST)) {
-  $errors = validateForm($_POST);
+$database = new Database();
+$database->connect();
+$categories = $database->select('SELECT * FROM category');
 
-  if (isset($_FILES['lot-file'])) {
-    $file = $_FILES['lot-file'];
+$form = new LotForm();
 
-    if ($file['type'] == 'image/jpeg') {
-      move_uploaded_file($file['tmp_name'], 'img/' . $file['name']);
-    } else {
-      $errors['lot-file'] = 'Загрузите фото в формате jpeg';
-    }
-  }
+if ($form->isSubmitted()) {
+  $form->validate();
+  $errors = $form->getAllErrors();
 
-  if (empty($errors)) {
-    $lot = [
-      'title' => $_POST['lot-name'],
-      'category' => $_POST['category'],
-      'price' => $_POST["lot-rate"],
-      'url' => 'img/' . $file['name'],
-      'description' => $_POST['message']
+  if ($form->isValid()) {
+    $formdata = $form->getFormdata();
+    $lot_file = $formdata['lot-file'];
+    move_uploaded_file($lot_file['tmp_name'], 'img/' . $lot_file['name']);
+
+    $data = [
+      date('Y-m-d H:i:s', strtotime($formdata['lot-date'])),
+      $formdata['category'],
+      $user->getUserdata()['id'],
+      $formdata['lot-name'],
+      $formdata['message'],
+      'img/' . $lot_file['name'],
+      $formdata['lot-rate'],
+      $formdata['lot-step']
     ];
+
+    $sql = '
+      INSERT INTO lot
+      (date_add, date_close, category_id, user_id, title, description, image, initial_rate, rate_step, fav_count)
+      VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, 0)
+    ';
+    $lot_id = $database->insert($sql, $data);
+
+    if ($lot_id) {
+      header("Location: /lot.php?id=" . $lot_id);
+    } else {
+      header('HTTP/1.1 500 Internal Server Error');
+      header('Location: /500.php');
+    }
   }
 }
 ?>
@@ -47,16 +65,8 @@ if (isset($_POST)) {
 <body>
 
 <?= includeTemplate('templates/header.php') ?>
-
-<?php if (empty($_SESSION['user'])): ?>
-<?= includeTemplate('templates/error-403.php') ?>
-<?php elseif (empty($_POST) || !empty($errors)): ?>
 <?= includeTemplate('templates/add.php', ['categories' => $categories, 'errors' => $errors, 'file' => $file]) ?>
-<?php else: ?>
-<?= includeTemplate('templates/lot.php', ['lot' => $lot, 'bets' => $bets]) ?>
-<?php endif; ?>
-
-<?= includeTemplate('templates/footer.php') ?>
+<?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
 
 </body>
 </html>

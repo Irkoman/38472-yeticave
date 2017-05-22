@@ -1,14 +1,28 @@
 <?php
-require_once './functions.php';
-require_once './data.php';
+require_once 'init.php';
 
-session_start();
+$user = new User();
 
-if (empty($_SESSION['user'])) {
+if (!$user->isAuth()) {
   header("HTTP/1.1 403 Forbidden");
+  header('Location: /403.php');
 }
 
+$user_id = $user->getUserdata()['id'];
 $my_bets = getMyBetsFromCookies();
+
+$database = new Database();
+$database->connect();
+$categories = $database->select('SELECT * FROM category');
+
+$sql = '
+  SELECT bet.lot_id, bet.date_add, bet.rate, lot.title AS lot_title, lot.image AS lot_image, lot.date_add AS lot_completion_date, category.name AS category
+  FROM bet
+  JOIN lot ON lot.id = bet.lot_id
+  JOIN category ON category.id = lot.category_id
+  WHERE bet.user_id = ?
+';
+$my_bets = $database->select($sql, [$user_id]);
 ?>
 
 <!DOCTYPE html>
@@ -22,14 +36,8 @@ $my_bets = getMyBetsFromCookies();
 <body>
 
 <?= includeTemplate('templates/header.php') ?>
-
-<?php if (empty($_SESSION['user'])): ?>
-<?= includeTemplate('templates/error-403.php') ?>
-<?php else: ?>
-<?= includeTemplate('templates/mylots.php', ['my_bets' => $my_bets, 'lots' => $lots]) ?>
-<?php endif; ?>
-
-<?= includeTemplate('templates/footer.php') ?>
+<?= includeTemplate('templates/mylots.php', ['categories' => $categories, 'my_bets' => $my_bets]) ?>
+<?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
 
 </body>
 </html>

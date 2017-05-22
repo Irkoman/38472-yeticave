@@ -1,5 +1,6 @@
 <?php
-session_start();
-unset($_SESSION['user']);
-header("Location: /index.php");
+require_once 'init.php';
+
+$user = new User();
+$user->logout();
 ?>

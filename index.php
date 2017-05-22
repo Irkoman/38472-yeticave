@@ -1,27 +1,17 @@
 <?php
-require_once './functions.php';
-require_once './data.php';
+require_once 'init.php';
 
-session_start();
+$database = new Database();
+$database->connect();
+$categories = $database->select('SELECT * FROM category');
 
-$categories = [];
-$lots = [];
-$link = connectDb();
-
-if (!$link) {
-  print('Ошибка: ' . mysqli_connect_error());
-} else {
-  $sql = 'SELECT * FROM category';
-  $categories = selectData($link, $sql);
-
-  $sql = '
-    SELECT lot.id, lot.title, lot.initial_rate, lot.image, category.name AS category
-    FROM lot JOIN category ON lot.category_id = category.id
-    WHERE lot.date_close > NOW() AND lot.winner_id IS NULL
-    ORDER BY lot.date_add DESC LIMIT 6
-  ';
-  $lots = selectData($link, $sql);
-}
+$sql = '
+  SELECT lot.id, lot.title, lot.initial_rate, lot.image, category.name AS category
+  FROM lot JOIN category ON lot.category_id = category.id
+  WHERE lot.date_close > NOW() AND lot.winner_id IS NULL
+  ORDER BY lot.date_add DESC LIMIT 6
+';
+$lots = $database->select($sql);
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +26,7 @@ if (!$link) {
 
 <?= includeTemplate('templates/header.php') ?>
 <?= includeTemplate('templates/lots.php', ['categories' => $categories, 'lots' => $lots, 'lot_time_remaining' => calculateLotTime()]) ?>
-<?= includeTemplate('templates/footer.php') ?>
+<?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
 
 </body>
 </html>

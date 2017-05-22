@@ -1,28 +1,22 @@
 <?php
-require_once './functions.php';
-require_once './userdata.php';
+require_once 'init.php';
 
 $errors = [];
 
-if (isset($_POST)) {
-  $errors = validateForm($_POST);
-}
+$database = new Database();
+$database->connect();
+$categories = $database->select('SELECT * FROM category');
 
-if (!empty($_POST) && !$errors) {
-  $email = $_POST['email'];
-  $password = $_POST['password'];
+$form = new LoginForm();
 
-  if ($user = searchUserByEmail($email, $users)) {
-    if (password_verify($password, $user['password'])) {
-      session_start();
-      $_SESSION['user'] = $user;
-      header("Location: /index.php");
-    }
-    else {
-      $errors['password'] = 'Вы ввели неверный пароль';
-    }
-  } else {
-    $errors['email'] = 'Почта не найдена';
+if ($form->isSubmitted()) {
+  $form->validate();
+  $errors = $form->getAllErrors();
+
+  if ($form->isValid()) {
+    $formdata = $form->getFormdata();
+    $user = new User($database, $formdata['email'], $formdata['password']);
+    $errors = $user->authErrors;
   }
 }
 ?>
@@ -38,8 +32,8 @@ if (!empty($_POST) && !$errors) {
 <body>
 
 <?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/login.php', ['errors' => $errors]) ?>
-<?= includeTemplate('templates/footer.php') ?>
+<?= includeTemplate('templates/login.php', ['categories' => $categories, 'errors' => $errors]) ?>
+<?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
 
 </body>
 </html>

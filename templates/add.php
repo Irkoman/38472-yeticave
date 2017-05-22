@@ -7,24 +7,11 @@ $file = $data['file'];
 <main>
   <nav class="nav">
     <ul class="nav__list container">
-      <li class="nav__item">
-        <a href="all-lots.html">Доски и лыжи</a>
-      </li>
-      <li class="nav__item">
-        <a href="all-lots.html">Крепления</a>
-      </li>
-      <li class="nav__item">
-        <a href="all-lots.html">Ботинки</a>
-      </li>
-      <li class="nav__item">
-        <a href="all-lots.html">Одежда</a>
-      </li>
-      <li class="nav__item">
-        <a href="all-lots.html">Инструменты</a>
-      </li>
-      <li class="nav__item">
-        <a href="all-lots.html">Разное</a>
-      </li>
+      <?php foreach ($categories as $category): ?>
+        <li class="nav__item">
+          <a href="all-lots.html"><?= $category['name'] ?></a>
+        </li>
+      <?php endforeach; ?>
     </ul>
   </nav>
   <form class="form form--add-lot container <?= !empty($errors) ? 'form--invalid' : '' ?>" action="add.php" method="post" enctype="multipart/form-data">
@@ -40,8 +27,8 @@ $file = $data['file'];
         <select id="category" name="category">
           <option value="">Выберите категорию</option>
           <?php foreach ($categories as $category): ?>
-            <option <?= isset($_POST['category']) && $category == $_POST['category'] ? 'selected' : '' ?>>
-              <?= $category ?>
+            <option value="<?= $category['id']; ?>" <?= isset($_POST['category']) && $category['id'] == $_POST['category'] ? 'selected' : '' ?>>
+              <?= $category['name'] ?>
             </option>
           <?php endforeach; ?>
         </select>

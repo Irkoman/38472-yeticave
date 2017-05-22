@@ -77,14 +77,13 @@ function validateForm($post) {
   return $errors;
 }
 
-function searchUserByEmail($email, $users) {
+function searchUserByEmail($link, $email) {
   $result = null;
+  $sql = "SELECT * FROM user WHERE email = ? LIMIT 1";
+  $data = selectData($link, $sql, [$email]);
 
-  foreach ($users as $user) {
-    if ($user['email'] == $email) {
-      $result = $user;
-      break;
-    }
+  if (isset($data[0])) {
+    $result = $data[0];
   }
 
   return $result;
@@ -112,6 +111,12 @@ function isAlreadyBetted($id, $my_bets) {
 
 function connectDb() {
   $link = mysqli_connect('localhost', 'root', '', 'yeticave');
+
+  if (!$link) {
+    header('HTTP/1.1 500 Internal Server Error');
+    header('Location: /500.php');
+  }
+
   return $link;
 }
 
