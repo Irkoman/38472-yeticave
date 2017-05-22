@@ -21,8 +21,8 @@ $sql = "SELECT bet.date_add, bet.rate, user.name AS user
 $bets = $database->select($sql);
 
 if (empty($lot)) {
-  header("HTTP/1.1 404 Not Found");
-  header("Location: /404.php");
+    header("HTTP/1.1 404 Not Found");
+    header("Location: /404.php");
 }
 
 $user = new User();
@@ -30,46 +30,52 @@ $userdata = $user->getUserdata();
 $form = new BetForm();
 
 if ($form->isSubmitted()) {
-  $form->validate();
-  $errors = $form->getAllErrors();
+    $form->validate();
+    $errors = $form->getAllErrors();
 
-  if ($form->isValid()) {
-    $formdata = $form->getFormdata();
+    if ($form->isValid()) {
+        $formdata = $form->getFormdata();
 
-    $data = [$id, $userdata['id'], $formdata['cost']];
+        $data = [$id, $userdata['id'], $formdata['cost']];
 
-    $my_bets[] = [
-      'date_add' => time(),
-      'lot_id'   => $id,
-      'rate'     => $formdata['cost']
-    ];
+        $my_bets[] = [
+            'date_add' => time(),
+            'lot_id' => $id,
+            'rate' => $formdata['cost']
+        ];
 
-    setcookie("my_bets", json_encode($my_bets), strtotime("+1 month"));
-    $sql = 'INSERT INTO bet (date_add, lot_id, user_id, rate) VALUES (NOW(), ?, ?, ?)';
-    $bet_id = $database->insert($sql, $data);
+        setcookie("my_bets", json_encode($my_bets), strtotime("+1 month"));
+        $sql = 'INSERT INTO bet (date_add, lot_id, user_id, rate) VALUES (NOW(), ?, ?, ?)';
+        $bet_id = $database->insert($sql, $data);
 
-    if ($bet_id) {
-      header("Location: /mylots.php");
-    } else {
-      header('HTTP/1.1 500 Internal Server Error');
-      header('Location: /500.php');
+        if ($bet_id) {
+            header("Location: /mylots.php");
+        } else {
+            header('HTTP/1.1 500 Internal Server Error');
+            header('Location: /500.php');
+        }
     }
-  }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title><?= $lot['title'] ?></title>
-  <link href="css/normalize.min.css" rel="stylesheet">
-  <link href="css/style.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title><?= $lot['title'] ?></title>
+    <link href="css/normalize.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
 
 <?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/lot.php', ['categories' => $categories, 'lot' => $lot, 'bets' => $bets, 'errors' => $errors, 'show_bet_form' => $show_bet_form]) ?>
+<?= includeTemplate('templates/lot.php', [
+    'categories' => $categories,
+    'lot' => $lot,
+    'bets' => $bets,
+    'errors' => $errors,
+    'show_bet_form' => $show_bet_form
+]) ?>
 <?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
 
 </body>
