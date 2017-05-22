@@ -8,12 +8,12 @@ $errors = [];
 
 $database = new Database();
 $database->connect();
-$categories = $database->select('SELECT * FROM category');
 
-$sql = "SELECT lot.id, lot.title, lot.description, lot.initial_rate, lot.image, category.name AS category
-  FROM lot JOIN category ON lot.category_id = category.id
-  WHERE lot.id = $id";
-$lot = $database->select($sql)[0];
+$categoryFinder = new CategoryFinder($database);
+$categories = $categoryFinder->findAllBy();
+
+$lotFinder = new LotFinder($database, 'lot');
+$lot = $lotFinder->findLotById($id);
 
 $sql = "SELECT bet.date_add, bet.rate, user.name AS user
   FROM bet JOIN user ON bet.user_id = user.id

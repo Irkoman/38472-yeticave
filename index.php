@@ -3,7 +3,9 @@ require_once 'init.php';
 
 $database = new Database();
 $database->connect();
-$categories = $database->select('SELECT * FROM category');
+
+$categoryFinder = new CategoryFinder($database);
+$categories = $categoryFinder->findAllBy();
 
 $sql = '
   SELECT lot.id, lot.title, lot.initial_rate, lot.image, lot.date_close, category.name AS category
