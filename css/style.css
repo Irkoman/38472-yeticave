@@ -1188,17 +1188,16 @@ h2 {
 }
 
 .rates__timer .timer {
-  width: 82px;
+  display: inline-block;
+  vertical-align: middle;
   box-sizing: border-box;
 }
 
 .rates__timer .timer--win {
-  width: 112px;
   box-sizing: border-box;
 }
 
 .rates__timer .timer--end {
-  width: 107px;
   box-sizing: border-box;
 }
 

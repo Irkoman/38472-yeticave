@@ -52,15 +52,17 @@ class SignupForm extends BaseForm {
         $allowed_types = [$allowed_mime];
       }
 
-      $file = $_FILES[$field]['tmp_name'];
+      $file = $_FILES[$field];
 
-      if ($file) {
+      if ($file['tmp_name']) {
         $fileinfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($fileinfo, $file);
+        $mime = finfo_file($fileinfo, $file['tmp_name']);
         $result = in_array($mime, $allowed_types);
       }
 
-      if (!$result) {
+      if ($result) {
+        move_uploaded_file($file['tmp_name'], 'img/' . $file['name']);
+      } else {
         $this->errors[$field] = 'Допустимые форматы изображений: jpeg, png, gif, tiff';
       }
     }

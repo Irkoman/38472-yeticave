@@ -28,7 +28,9 @@ $my_bets = $data['my_bets'];
             <?= $my_bet['category'] ?>
           </td>
           <td class="rates__timer">
-            <div class="timer timer--finishing">07:13:34</div>
+            <div class="timer timer--finishing">s
+              <?= calculateRemainingTime($my_bet['lot_date_close']) ?>
+            </div>
           </td>
           <td class="rates__price">
             <?= $my_bet['rate'] . ' p.' ?>

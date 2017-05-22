@@ -6,7 +6,7 @@ $database->connect();
 $categories = $database->select('SELECT * FROM category');
 
 $sql = '
-  SELECT lot.id, lot.title, lot.initial_rate, lot.image, category.name AS category
+  SELECT lot.id, lot.title, lot.initial_rate, lot.image, lot.date_close, category.name AS category
   FROM lot JOIN category ON lot.category_id = category.id
   WHERE lot.date_close > NOW() AND lot.winner_id IS NULL
   ORDER BY lot.date_add DESC LIMIT 6
@@ -25,7 +25,7 @@ $lots = $database->select($sql);
 <body>
 
 <?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/lots.php', ['categories' => $categories, 'lots' => $lots, 'lot_time_remaining' => calculateLotTime()]) ?>
+<?= includeTemplate('templates/lots.php', ['categories' => $categories, 'lots' => $lots]) ?>
 <?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
 
 </body>

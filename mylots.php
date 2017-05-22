@@ -16,7 +16,7 @@ $database->connect();
 $categories = $database->select('SELECT * FROM category');
 
 $sql = '
-  SELECT bet.lot_id, bet.date_add, bet.rate, lot.title AS lot_title, lot.image AS lot_image, lot.date_add AS lot_completion_date, category.name AS category
+  SELECT bet.lot_id, bet.date_add, bet.rate, lot.title AS lot_title, lot.image AS lot_image, lot.date_close AS lot_date_close, category.name AS category
   FROM bet
   JOIN lot ON lot.id = bet.lot_id
   JOIN category ON category.id = lot.category_id

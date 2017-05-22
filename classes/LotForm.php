@@ -11,6 +11,7 @@ class LotForm extends BaseForm {
 
   protected $rules = [
     ['number', ['lot-rate', 'lot-step', 'category']],
+    ['date', ['lot-date']],
     ['image', 'lot-file'],
     ['required', ['lot-date', 'category', 'lot-name', 'message', 'lot-file', 'lot-rate', 'lot-step']],
   ];
@@ -29,7 +30,29 @@ class LotForm extends BaseForm {
       if (!filter_var($field, FILTER_VALIDATE_INT)) {
         $result = false;
 
-        $this->errors[$value] = "Здесь должно быть число";
+        $this->errors[$value] = 'Здесь должно быть число';
+      }
+    }
+
+    return $result;
+  }
+
+  /**
+   * Проверяет поля с датами на корректность
+   * @param array $fields Список полей для проверки
+   * @return bool Результат проверки
+   */
+  protected function runDateValidator($fields) {
+    $result = true;
+
+    foreach ($fields as $value) {
+      $field = $this->formData[$value];
+      $date = date_parse_from_format('d.m.Y', $field);
+
+      if (!checkdate($date['month'], $date['day'], $date['year'])) {
+        $result = false;
+
+        $this->errors[$value] = 'Некорректная дата';
       }
     }
 
@@ -52,15 +75,17 @@ class LotForm extends BaseForm {
         $allowed_types = [$allowed_mime];
       }
 
-      $file = $_FILES[$field]['tmp_name'];
+      $file = $_FILES[$field];
 
-      if ($file) {
+      if ($file['tmp_name']) {
         $fileinfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($fileinfo, $file);
+        $mime = finfo_file($fileinfo, $file['tmp_name']);
         $result = in_array($mime, $allowed_types);
       }
 
-      if (!$result) {
+      if ($result) {
+        move_uploaded_file($file['tmp_name'], 'img/' . $file['name']);
+      } else {
         $this->errors[$field] = 'Допустимые форматы изображений: jpeg, png, gif, tiff';
       }
     }

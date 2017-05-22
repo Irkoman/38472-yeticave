@@ -1,7 +1,6 @@
 <?php
 $categories = $data['categories'];
 $lots = $data['lots'];
-$lot_time_remaining = $data['lot_time_remaining'];
 ?>
 
 <main class="container">
@@ -55,7 +54,7 @@ $lot_time_remaining = $data['lot_time_remaining'];
                 <span class="lot__cost"><?= $lot['initial_rate'] ?><b class="rub">р</b></span>
               </div>
               <div class="lot__timer timer">
-                <?= $lot_time_remaining ?>
+                <?= calculateRemainingTime($lot['date_close']) ?>
               </div>
             </div>
           </div>

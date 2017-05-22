@@ -20,19 +20,17 @@ $form = new LotForm();
 if ($form->isSubmitted()) {
   $form->validate();
   $errors = $form->getAllErrors();
+  $formdata = $form->getFormdata();
+  $file = $formdata['lot-file'];
 
   if ($form->isValid()) {
-    $formdata = $form->getFormdata();
-    $lot_file = $formdata['lot-file'];
-    move_uploaded_file($lot_file['tmp_name'], 'img/' . $lot_file['name']);
-
     $data = [
       date('Y-m-d H:i:s', strtotime($formdata['lot-date'])),
       $formdata['category'],
       $user->getUserdata()['id'],
       $formdata['lot-name'],
       $formdata['message'],
-      'img/' . $lot_file['name'],
+      'img/' . $file['name'],
       $formdata['lot-rate'],
       $formdata['lot-step']
     ];

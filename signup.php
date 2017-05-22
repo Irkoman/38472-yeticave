@@ -26,11 +26,7 @@ if ($form->isSubmitted()) {
   }
 
   if (!empty($formdata['avatar']['name'])) {
-    $tmp_name = $formdata['avatar']['tmp_name'];
-    $avatar_name = $formdata['avatar']['name'];
-
-    move_uploaded_file($tmp_name, 'img/' . $avatar_name);
-    $avatar = 'img/' . $avatar_name;
+    $avatar = 'img/' . $formdata['avatar']['name'];
   }
 
   if ($form->isValid()) {
