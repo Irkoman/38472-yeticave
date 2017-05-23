@@ -3,35 +3,36 @@
 /**
  * Class BetForm
  */
-class BetForm extends BaseForm {
+class BetForm extends BaseForm
+{
+    public $formName = 'bet';
 
-  public $formName = 'bet';
+    protected $fields = ['cost'];
 
-  protected $fields = ['cost'];
+    protected $rules = [
+        ['number', ['cost']],
+        ['required', ['cost']],
+    ];
 
-  protected $rules = [
-    ['number', ['cost']],
-    ['required', ['cost']],
-  ];
+    /**
+     * Проверяет числовые поля на корректность
+     * @param array $fields Список полей для проверки
+     * @return bool Результат проверки
+     */
+    protected function runNumberValidator($fields)
+    {
+        $result = true;
 
-  /**
-   * Проверяет числовые поля на корректность
-   * @param array $fields Список полей для проверки
-   * @return bool Результат проверки
-   */
-  protected function runNumberValidator($fields) {
-    $result = true;
+        foreach ($fields as $value) {
+            $field = $this->formData[$value];
 
-    foreach ($fields as $value) {
-      $field = $this->formData[$value];
+            if (!filter_var($field, FILTER_VALIDATE_INT)) {
+                $result = false;
 
-      if (!filter_var($field, FILTER_VALIDATE_INT)) {
-        $result = false;
+                $this->errors[$value] = "Здесь должно быть число";
+            }
+        }
 
-        $this->errors[$value] = "Здесь должно быть число";
-      }
+        return $result;
     }
-
-    return $result;
-  }
 }
