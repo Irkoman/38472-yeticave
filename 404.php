@@ -1,25 +1,19 @@
 <?php
 require_once 'init.php';
-?>
 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>404</title>
-    <link href="css/normalize.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-</head>
-<body>
+$categoryModel = new CategoryModel();
+$userModel = new UserModel();
 
-<?= includeTemplate('templates/header.php') ?>
+$content = [
+    'path' => 'views/content/error.php',
+    'models' => [
+        'categoryModel' => $categoryModel,
+        'userModel' => $userModel,
+        'error' => [
+            'title' => '404',
+            'text' => 'Йети не нашёл такой страницы'
+        ]
+    ]
+];
 
-<div class="error">
-    <h1 class="error__title">404</h1>
-    <p>Йети не нашёл такой страницы</p>
-</div>
-
-<?= includeTemplate('templates/footer.php') ?>
-
-</body>
-</html>
+echo Template::render('views/base.php', ['title' => '404', 'content' => $content]);

@@ -17,6 +17,37 @@ class LotForm extends BaseForm
     ];
 
     /**
+     * Полная проверка формы и добавление нового лота в случае успеха
+     */
+    public function checkLotForm()
+    {
+        $userModel = new UserModel();
+        $file = '';
+
+        if ($this->isSubmitted()) {
+            $this->validate();
+            $formdata = $this->getFormdata();
+
+            if ($this->isValid()) {
+                $lotRecord = new LotRecord();
+                $lotRecord->date_add = date("Y-m-d H:i:s");
+                $lotRecord->date_close = date('Y-m-d H:i:s', strtotime($formdata['lot-date']));
+                $lotRecord->category_id = $formdata['category'];
+                $lotRecord->user_id = $userModel->getUserdata()['id'];
+                $lotRecord->title = $formdata['lot-name'];
+                $lotRecord->description = $formdata['message'];
+                $lotRecord->image = 'img/upload/' . $formdata['lot-file']['name'];
+                $lotRecord->initial_rate = $formdata['lot-rate'];
+                $lotRecord->rate_step = $formdata['lot-step'];
+                $lotRecord->fav_count = 0;
+                $lotRecord->insert();
+
+                header('Location: /lot.php?id=' . $lotRecord->id);
+            }
+        }
+    }
+
+    /**
      * Проверяет числовые поля на корректность
      * @param array $fields Список полей для проверки
      * @return bool Результат проверки
@@ -87,7 +118,7 @@ class LotForm extends BaseForm
             }
 
             if ($result) {
-                move_uploaded_file($file['tmp_name'], 'img/' . $file['name']);
+                move_uploaded_file($file['tmp_name'], 'img/upload/' . $file['name']);
             } else {
                 $this->errors[$field] = 'Допустимые форматы изображений: jpeg, png, gif, tiff';
             }

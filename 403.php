@@ -1,25 +1,19 @@
 <?php
 require_once 'init.php';
-?>
 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>403</title>
-    <link href="css/normalize.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-</head>
-<body>
+$categoryModel = new CategoryModel();
+$userModel = new UserModel();
 
-<?= includeTemplate('templates/header.php') ?>
+$content = [
+    'path' => 'views/content/error.php',
+    'models' => [
+        'categoryModel' => $categoryModel,
+        'userModel' => $userModel,
+        'error' => [
+            'title' => '403',
+            'text' => 'Добавлять лоты и участвовать в торгах<br>могут только зарегистрированные пользователи'
+        ]
+    ]
+];
 
-<div class="error">
-    <h1 class="error__title">403</h1>
-    <p>Добавлять лоты и участвовать в торгах<br>могут только зарегистрированные пользователи</p>
-</div>
-
-<?= includeTemplate('templates/footer.php') ?>
-
-</body>
-</html>
+echo Template::render('views/base.php', ['title' => '403', 'content' => $content]);

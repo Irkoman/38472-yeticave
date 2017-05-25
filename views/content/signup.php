@@ -1,7 +1,10 @@
 <?php
-$categories = $data['categories'];
-$errors = $data['errors'];
-$formdata = $data['formdata'];
+$categoryModel = $data['categoryModel'];
+$categories = $categoryModel->finder->findCategories();
+
+$formModel = $data['formModel'];
+$formdata = $formModel->getFormdata();
+$errors = $formModel->getAllErrors();
 ?>
 
 <main>
@@ -40,12 +43,12 @@ $formdata = $data['formdata'];
                       placeholder="Напишите, как с вами связаться"><?= !empty($formdata['message']) ? $formdata['message'] : '' ?></textarea>
             <span class="form__error"><?= !empty($errors['message']) ? $errors['message'] : '' ?></span>
         </div>
-        <div class="form__item form__item--file form__item--last <?= empty($errors['avatar']) && !empty($formdata['avatar']) ? 'form__item--uploaded' : '' ?>">
+        <div class="form__item form__item--file form__item--last <?= empty($errors['avatar']) && !empty($formdata['avatar']['name']) ? 'form__item--uploaded' : '' ?>">
             <label>Изображение</label>
             <div class="preview">
                 <button class="preview__remove" type="button">x</button>
                 <div class="preview__img">
-                    <img src="<?= empty($errors['avatar']) && !empty($formdata['avatar']) ? '../img/' . $formdata['avatar']['name'] : '' ?>"
+                    <img src="<?= empty($errors['avatar']) && !empty($formdata['avatar']['name']) ? '../img/upload/' . $formdata['avatar']['name'] : '' ?>"
                          width="113" height="113" alt="Аватар">
                 </div>
             </div>

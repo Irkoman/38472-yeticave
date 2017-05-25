@@ -1,6 +1,8 @@
 <?php
-$user = new User(new Database());
-$userdata = $user->getUserdata();
+if (!empty($data['userModel'])) {
+    $userModel = $data['userModel'];
+    $userdata = $userModel->getUserdata();
+}
 ?>
 
 <header class="main-header">
@@ -15,9 +17,9 @@ $userdata = $user->getUserdata();
         </form>
         <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
         <nav class="user-menu">
-            <?php if ($user->isAuth()): ?>
+            <?php if (!empty($userModel) && $userModel->isAuth()): ?>
                 <div class="user-menu__image">
-                    <img src="<?= !empty($userdata['avatar']) ? $userdata['avatar'] : '' ?>" width="40" height="40"
+                    <img src="<?= !empty($userdata['avatar']) ? $userdata['avatar'] : 'img/upload/success-kid.jpg' ?>" width="40" height="40"
                          alt="Пользователь">
                 </div>
                 <div class="user-menu__logged">

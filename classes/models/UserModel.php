@@ -1,10 +1,15 @@
 <?php
 
 /**
- * Class User
+ * Class UserModel
  */
-class User
+class UserModel extends BaseModel
 {
+    /**
+     * @var string $name
+     */
+    protected $name = 'User';
+
     /**
      * @var array $userdata Ассоциативный массив с данными пользователя
      */
@@ -26,9 +31,11 @@ class User
      * @param string $email Почта
      * @param string $password Пароль
      */
-    public function __construct($database, $email = null, $password = null)
+    public function __construct($email = null, $password = null)
     {
-        $this->database = $database;
+        $this->finder = new UserFinder();
+        $this->record = new UserRecord();
+        $this->database = new Database();
 
         if ($email && $password) {
             $this->login($email, $password);

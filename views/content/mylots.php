@@ -1,6 +1,12 @@
 <?php
-$categories = $data['categories'];
-$my_bets = $data['my_bets'];
+$categoryModel = $data['categoryModel'];
+$categories = $categoryModel->finder->findCategories();
+
+$userModel = $data['userModel'];
+$user_id = $userModel->getUserdata()['id'];
+
+$betModel = $data['betModel'];
+$my_bets = $betModel->finder->findBetsByUser($user_id);
 ?>
 
 <main>
@@ -31,14 +37,14 @@ $my_bets = $data['my_bets'];
                     </td>
                     <td class="rates__timer">
                         <div class="timer timer--finishing">
-                            <?= calculateRemainingTime($my_bet->lot_date_close) ?>
+                            <?= Formatter::calculateRemainingTime($my_bet->lot_date_close) ?>
                         </div>
                     </td>
                     <td class="rates__price">
                         <?= $my_bet->rate . ' p.' ?>
                     </td>
                     <td class="rates__time">
-                        <?= formatTime(strtotime($my_bet->date_add)) ?>
+                        <?= Formatter::formatTime(strtotime($my_bet->date_add)) ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

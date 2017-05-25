@@ -1,6 +1,6 @@
 <?php
 require_once 'init.php';
 
-$user = new User();
-$user->logout();
+$userModel = new UserModel();
+$userModel->logout();
 ?>

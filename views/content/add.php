@@ -1,7 +1,10 @@
 <?php
-$categories = $data['categories'];
-$errors = $data['errors'];
-$formdata = $data['formdata'];
+$categoryModel = $data['categoryModel'];
+$categories = $categoryModel->finder->findCategories();
+
+$formModel = $data['formModel'];
+$formdata = $formModel->getFormdata();
+$errors = $formModel->getAllErrors();
 ?>
 
 <main>
@@ -44,12 +47,12 @@ $formdata = $data['formdata'];
                       placeholder="Напишите описание лота"><?= !empty($formdata['message']) ? $formdata['message'] : '' ?></textarea>
             <span class="form__error"><?= !empty($errors['message']) ? $errors['message'] : '' ?></span>
         </div>
-        <div class="form__item form__item--file <?= empty($errors['lot-file']) && !empty($formdata['lot-file']) ? 'form__item--uploaded' : '' ?>">
+        <div class="form__item form__item--file <?= empty($errors['lot-file']) && !empty($formdata['lot-file']['name']) ? 'form__item--uploaded' : '' ?>">
             <label>Изображение</label>
             <div class="preview">
                 <button class="preview__remove" type="button">x</button>
                 <div class="preview__img">
-                    <img src="<?= empty($errors['lot-file']) && !empty($formdata['lot-file']) ? '../img/' . $formdata['lot-file']['name'] : '' ?>"
+                    <img src="<?= empty($errors['lot-file']) && !empty($formdata['lot-file']['name']) ? 'img/upload/' . $formdata['lot-file']['name'] : '' ?>"
                          width="113" height="113" alt="Изображение лота">
                 </div>
             </div>

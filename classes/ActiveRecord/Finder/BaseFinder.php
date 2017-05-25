@@ -22,9 +22,9 @@ abstract class BaseFinder
      * @param string $tableName
      * @param mysqli $database
      */
-    public function __construct($database)
+    public function __construct()
     {
-        $this->database = $database;
+        $this->database = new Database();
     }
 
     /**

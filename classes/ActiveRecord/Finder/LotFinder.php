@@ -14,7 +14,7 @@ class LotFinder extends BaseFinder
      */
     public function findLotById($id)
     {
-        $sql = 'SELECT lot.id, lot.title, lot.description, lot.initial_rate, lot.image, category.name AS category_name
+        $sql = 'SELECT lot.id, lot.title, lot.description, lot.initial_rate, lot.image, lot.date_close, category.name AS category_name
                 FROM lot JOIN category ON lot.category_id = category.id WHERE lot.id = ?';
 
         return parent::selectOne($sql, 'LotRecord', [$id]);

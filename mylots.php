@@ -1,38 +1,23 @@
 <?php
 require_once 'init.php';
 
-$user = new User();
+$userModel = new UserModel();
 
-if (!$user->isAuth()) {
+if (!$userModel->isAuth()) {
     header("HTTP/1.1 403 Forbidden");
     header('Location: /403.php');
 }
 
-$user_id = $user->getUserdata()['id'];
-$my_bets = getMyBetsFromCookies();
+$categoryModel = new CategoryModel();
+$betModel = new BetModel();
 
-$database = new Database();
+$content = [
+    'path' => 'views/content/mylots.php',
+    'models' => [
+        'categoryModel' => $categoryModel,
+        'userModel' => $userModel,
+        'betModel' => $betModel
+    ]
+];
 
-$categoryFinder = new CategoryFinder($database);
-$categories = $categoryFinder->findCategories();
-
-$betFinder = new BetFinder($database);
-$my_bets = $betFinder->findBetsByUser($user_id);
-?>
-
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Мои ставки</title>
-    <link href="css/normalize.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-</head>
-<body>
-
-<?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/mylots.php', ['categories' => $categories, 'my_bets' => $my_bets]) ?>
-<?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
-
-</body>
-</html>
+echo Template::render('views/base.php', ['title' => 'Мои ставки', 'content' => $content]);

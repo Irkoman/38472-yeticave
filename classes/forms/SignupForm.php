@@ -16,6 +16,41 @@ class SignupForm extends BaseForm
     ];
 
     /**
+     * Полная проверка формы и регистрация нового пользователя в случае успеха
+     */
+    public function checkSignupForm()
+    {
+        $avatar = '';
+
+        if ($this->isSubmitted()) {
+            $this->validate();
+            $formdata = $this->getFormdata();
+            $database = new Database();
+
+            if (!empty($formdata['email']) && $database->searchUserByEmail($formdata['email'])) {
+                $this->errors['email'] = 'Указанный email уже используется другим пользователем';
+            }
+
+            if (!empty($formdata['avatar']['name'])) {
+                $avatar = 'img/upload/' . $formdata['avatar']['name'];
+            }
+
+            if ($this->isValid()) {
+                $userRecord = new UserRecord();
+                $userRecord->date_add = date('Y-m-d H:i:s');
+                $userRecord->email = $formdata['email'];
+                $userRecord->password = password_hash($formdata['password'], PASSWORD_DEFAULT);
+                $userRecord->name = $formdata['name'];
+                $userRecord->avatar = $avatar;
+                $userRecord->contact = $formdata['message'];
+                $userRecord->insert();
+
+                header('Location: /');
+            }
+        }
+    }
+
+    /**
      * Проверяет email на корректность
      * @param array $fields Список полей для проверки
      * @return bool Результат проверки
@@ -30,7 +65,7 @@ class SignupForm extends BaseForm
             if (!filter_var($field, FILTER_VALIDATE_EMAIL)) {
                 $result = false;
 
-                $this->errors[$value] = "Введите корректный email";
+                $this->errors[$value] = 'Введите корректный email';
             }
         }
 
@@ -63,7 +98,7 @@ class SignupForm extends BaseForm
             }
 
             if ($result) {
-                move_uploaded_file($file['tmp_name'], 'img/' . $file['name']);
+                move_uploaded_file($file['tmp_name'], 'img/upload/' . $file['name']);
             } else {
                 $this->errors[$field] = 'Допустимые форматы изображений: jpeg, png, gif, tiff';
             }

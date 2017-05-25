@@ -1,7 +1,9 @@
 <?php
-$categories = $data['categories'];
-$errors = $data['errors'];
-$formdata = $data['formdata'];
+$categoryModel = $data['categoryModel'];
+$categories = $categoryModel->finder->findCategories();
+$formModel = $data['formModel'];
+$formdata = $formModel->getFormdata();
+$errors = $formModel->getAllErrors();
 ?>
 
 <main>

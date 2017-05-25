@@ -1,9 +1,27 @@
 <?php
-$lot = $data['lot'];
-$bets = $data['bets'];
-$errors = $data['errors'];
-$show_bet_form = $data['show_bet_form'];
-$categories = $data['categories'];
+$id = $data['id'];
+
+$lotModel = $data['lotModel'];
+$lot = $lotModel->finder->findLotById($id);
+
+if (empty($lot)) {
+    header("HTTP/1.1 404 Not Found");
+    header("Location: /404.php");
+}
+
+$userModel = $data['userModel'];
+
+$categoryModel = $data['categoryModel'];
+$categories = $categoryModel->finder->findCategories();
+
+$betModel = $data['betModel'];
+$bets = $betModel->finder->findBetsByLot($id);
+
+$my_bets = $betModel::getMyBetsFromCookies();
+$show_bet_form = !$betModel::isAlreadyBetted($id, $my_bets);
+
+$formModel = $data['formModel'];
+$errors = $formModel->getAllErrors();
 ?>
 
 <main>
@@ -27,10 +45,10 @@ $categories = $data['categories'];
                 <p class="lot-item__description"><?= $lot->description ?></p>
             </div>
             <div class="lot-item__right">
-                <?php if (isset($_SESSION['user'])): ?>
+                <?php if ($userModel->isAuth()): ?>
                     <div class="lot-item__state">
                         <div class="lot-item__timer timer">
-                            10:54:12
+                            <?= Formatter::calculateRemainingTime($lot->date_close) ?>
                         </div>
                         <div class="lot-item__cost-state">
                             <div class="lot-item__rate">
@@ -60,7 +78,7 @@ $categories = $data['categories'];
                             <tr class="history__item">
                                 <td class="history__name"><?= $bet->user_name ?></td>
                                 <td class="history__price"><?= $bet->rate ?></td>
-                                <td class="history__time"><?= formatTime(strtotime($bet->date_add)) ?></td>
+                                <td class="history__time"><?= Formatter::formatTime(strtotime($bet->date_add)) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </table>

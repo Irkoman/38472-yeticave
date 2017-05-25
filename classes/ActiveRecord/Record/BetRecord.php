@@ -35,6 +35,10 @@ class BetRecord extends BaseRecord
      * Поля смежных таблиц
      */
     public $user_name;
+    public $lot_image;
+    public $lot_title;
+    public $lot_date_close;
+    public $category_name;
 
     /**
      * @return string

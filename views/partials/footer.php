@@ -1,5 +1,8 @@
 <?php
-$categories = $data['categories'];
+if (!empty($data['categoryModel'])) {
+    $categoryModel = $data['categoryModel'];
+    $categories = $categoryModel->finder->findCategories();
+}
 ?>
 
 <footer class="main-footer">

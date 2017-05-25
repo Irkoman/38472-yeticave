@@ -1,6 +1,9 @@
 <?php
-$categories = $data['categories'];
-$lots = $data['lots'];
+$categoryModel = $data['categoryModel'];
+$categories = $categoryModel->finder->findCategories();
+
+$lotModel = $data['lotModel'];
+$lots = $lotModel->finder->findActualLots();
 ?>
 
 <main class="container">
@@ -56,7 +59,7 @@ $lots = $data['lots'];
                                     <span class="lot__cost"><?= $lot->initial_rate ?><b class="rub">р</b></span>
                                 </div>
                                 <div class="lot__timer timer">
-                                    <?= calculateRemainingTime($lot->date_close) ?>
+                                    <?= Formatter::calculateRemainingTime($lot->date_close) ?>
                                 </div>
                             </div>
                         </div>
