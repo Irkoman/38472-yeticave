@@ -12,17 +12,12 @@ $user_id = $user->getUserdata()['id'];
 $my_bets = getMyBetsFromCookies();
 
 $database = new Database();
-$database->connect();
-$categories = $database->select('SELECT * FROM category');
 
-$sql = '
-  SELECT bet.lot_id, bet.date_add, bet.rate, lot.title AS lot_title, lot.image AS lot_image, lot.date_close AS lot_date_close, category.name AS category
-  FROM bet
-  JOIN lot ON lot.id = bet.lot_id
-  JOIN category ON category.id = lot.category_id
-  WHERE bet.user_id = ?
-';
-$my_bets = $database->select($sql, [$user_id]);
+$categoryFinder = new CategoryFinder($database);
+$categories = $categoryFinder->findCategories();
+
+$betFinder = new BetFinder($database);
+$my_bets = $betFinder->findBetsByUser($user_id);
 ?>
 
 <!DOCTYPE html>

@@ -4,32 +4,43 @@
  * Class BetRecord
  * Класс для представления одной записи таблицы ставок
  */
-class BetRecord
+class BetRecord extends BaseRecord
 {
-    protected $tableName = 'bet';
-
     /**
      * @var int $id Идентификатор ставки
      */
-    private $id;
+    public $id;
 
     /**
      * @var int $lot_id Идентификатор лота
      */
-    private $lot_id;
+    public $lot_id;
 
     /**
      * @var int $user_id Идентификатор пользователя
      */
-    private $user_id;
+    public $user_id;
 
     /**
      * @var int $rate Сумма ставки
      */
-    private $rate;
+    public $rate;
 
     /**
      * @var string $date_add Дата добавления в таблицу
      */
-    private $date_add;
+    public $date_add;
+
+    /**
+     * Поля смежных таблиц
+     */
+    public $user_name;
+
+    /**
+     * @return string
+     */
+    protected function getTableName()
+    {
+        return 'bet';
+    }
 }

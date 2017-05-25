@@ -5,8 +5,7 @@ function includeTemplate($path, $data = [])
         return '';
     }
 
-    array_walk_recursive($data, 'secureData');
-
+    secureData($data);
     ob_start();
     include($path);
     $html = ob_get_clean();
@@ -14,9 +13,16 @@ function includeTemplate($path, $data = [])
     return $html;
 }
 
-function secureData(&$string)
+function secureData($data)
 {
-    $string = htmlspecialchars($string, ENT_QUOTES);
+    if (is_array($data)) {
+        foreach ($data as $key => $value) {
+            $data[$key] = secureData($value);
+        }
+        return $data;
+    } else {
+        return htmlspecialchars($data);
+    }
 }
 
 function calculateRemainingTime($date_close)

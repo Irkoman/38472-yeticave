@@ -4,8 +4,9 @@ require_once 'init.php';
 $errors = [];
 
 $database = new Database();
-$database->connect();
-$categories = $database->select('SELECT * FROM category');
+
+$categoryFinder = new CategoryFinder($database);
+$categories = $categoryFinder->findCategories();
 
 $form = new LoginForm();
 
@@ -32,7 +33,7 @@ if ($form->isSubmitted()) {
 <body>
 
 <?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/login.php', ['categories' => $categories, 'errors' => $errors]) ?>
+<?= includeTemplate('templates/login.php', ['categories' => $categories, 'formdata' => $form->getFormdata(), 'errors' => $errors]) ?>
 <?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
 
 </body>

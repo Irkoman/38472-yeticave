@@ -2,18 +2,12 @@
 require_once 'init.php';
 
 $database = new Database();
-$database->connect();
 
 $categoryFinder = new CategoryFinder($database);
-$categories = $categoryFinder->findAllBy();
+$categories = $categoryFinder->findCategories();
 
-$sql = '
-  SELECT lot.id, lot.title, lot.initial_rate, lot.image, lot.date_close, category.name AS category
-  FROM lot JOIN category ON lot.category_id = category.id
-  WHERE lot.date_close > NOW() AND lot.winner_id IS NULL
-  ORDER BY lot.date_add DESC LIMIT 6
-';
-$lots = $database->select($sql);
+$lotFinder = new LotFinder($database);
+$lots = $lotFinder->findActualLots();
 ?>
 
 <!DOCTYPE html>

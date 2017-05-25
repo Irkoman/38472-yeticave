@@ -12,8 +12,9 @@ $errors = [];
 $file = [];
 
 $database = new Database();
-$database->connect();
-$categories = $database->select('SELECT * FROM category');
+
+$categoryFinder = new CategoryFinder($database);
+$categories = $categoryFinder->findCategories();
 
 $form = new LotForm();
 
@@ -21,33 +22,22 @@ if ($form->isSubmitted()) {
     $form->validate();
     $errors = $form->getAllErrors();
     $formdata = $form->getFormdata();
-    $file = $formdata['lot-file'];
 
     if ($form->isValid()) {
-        $data = [
-            date('Y-m-d H:i:s', strtotime($formdata['lot-date'])),
-            $formdata['category'],
-            $user->getUserdata()['id'],
-            $formdata['lot-name'],
-            $formdata['message'],
-            'img/' . $file['name'],
-            $formdata['lot-rate'],
-            $formdata['lot-step']
-        ];
+        $lotRecord = new LotRecord($database);
+        $lotRecord->date_add = date("Y-m-d H:i:s");
+        $lotRecord->date_close = date('Y-m-d H:i:s', strtotime($formdata['lot-date']));
+        $lotRecord->category_id = $formdata['category'];
+        $lotRecord->user_id = $user->getUserdata()['id'];
+        $lotRecord->title = $formdata['lot-name'];
+        $lotRecord->description = $formdata['message'];
+        $lotRecord->image = 'img/' . $formdata['lot-file']['name'];
+        $lotRecord->initial_rate = $formdata['lot-rate'];
+        $lotRecord->rate_step = $formdata['lot-step'];
+        $lotRecord->fav_count = 0;
+        $lotRecord->insert();
 
-        $sql = '
-      INSERT INTO lot
-      (date_add, date_close, category_id, user_id, title, description, image, initial_rate, rate_step, fav_count)
-      VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, 0)
-    ';
-        $lot_id = $database->insert($sql, $data);
-
-        if ($lot_id) {
-            header("Location: /lot.php?id=" . $lot_id);
-        } else {
-            header('HTTP/1.1 500 Internal Server Error');
-            header('Location: /500.php');
-        }
+        header("Location: /lot.php?id=" . $lotRecord->id);
     }
 }
 ?>
@@ -63,7 +53,7 @@ if ($form->isSubmitted()) {
 <body>
 
 <?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/add.php', ['categories' => $categories, 'errors' => $errors, 'file' => $file]) ?>
+<?= includeTemplate('templates/add.php', ['categories' => $categories, 'errors' => $errors, 'formdata' => $formdata]) ?>
 <?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
 
 </body>

@@ -11,8 +11,9 @@ $errors = [];
 $avatar = '';
 
 $database = new Database();
-$database->connect();
-$categories = $database->select('SELECT * FROM category');
+
+$categoryFinder = new CategoryFinder($database);
+$categories = $categoryFinder->findCategories();
 
 $form = new SignupForm();
 
@@ -30,26 +31,16 @@ if ($form->isSubmitted()) {
     }
 
     if ($form->isValid()) {
-        $data = [
-            $formdata['email'],
-            password_hash($formdata['password'], PASSWORD_DEFAULT),
-            $formdata['name'],
-            $avatar,
-            $formdata['message']
-        ];
+        $userRecord = new UserRecord($database);
+        $userRecord->date_add = date("Y-m-d H:i:s");
+        $userRecord->email = $formdata['email'];
+        $userRecord->password = password_hash($formdata['password'], PASSWORD_DEFAULT);
+        $userRecord->name = $formdata['name'];
+        $userRecord->avatar = $avatar;
+        $userRecord->contact = $formdata['message'];
+        $userRecord->insert();
 
-        $sql = '
-      INSERT INTO user (date_add, email, password, name, avatar, contact)
-      VALUES (NOW(), ?, ?, ?, ?, ?)
-    ';
-        $user_id = $database->insert($sql, $data);
-
-        if ($user_id) {
-            header("Location: /");
-        } else {
-            header('HTTP/1.1 500 Internal Server Error');
-            header('Location: /500.php');
-        }
+        header("Location: /");
     }
 }
 ?>
@@ -65,7 +56,7 @@ if ($form->isSubmitted()) {
 <body>
 
 <?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/signup.php', ['categories' => $categories, 'errors' => $errors]) ?>
+<?= includeTemplate('templates/signup.php', ['categories' => $categories, 'formdata' => $formdata, 'errors' => $errors]) ?>
 <?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
 
 </body>

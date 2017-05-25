@@ -1,6 +1,7 @@
 <?php
 $categories = $data['categories'];
 $errors = $data['errors'];
+$formdata = $data['formdata'];
 ?>
 
 <main>
@@ -8,7 +9,7 @@ $errors = $data['errors'];
         <ul class="nav__list container">
             <?php foreach ($categories as $category): ?>
                 <li class="nav__item">
-                    <a href="all-lots.html"><?= $category['name'] ?></a>
+                    <a href="all-lots.html"><?= $category->name ?></a>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -17,7 +18,7 @@ $errors = $data['errors'];
         <h2>Вход</h2>
         <div class="form__item <?= !empty($errors['email']) ? 'form__item--invalid' : '' ?>">
             <label for="email">E-mail*</label>
-            <input id="email" type="text" name="email" value="<?= isset($_POST['email']) ? $_POST['email'] : '' ?>"
+            <input id="email" type="text" name="email" value="<?= !empty($formdata['email']) ? $formdata['email'] : '' ?>"
                    placeholder="Введите e-mail">
             <span class="form__error"><?= !empty($errors['email']) ? $errors['email'] : '' ?></span>
         </div>

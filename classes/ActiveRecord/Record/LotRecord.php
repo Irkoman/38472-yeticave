@@ -4,73 +4,78 @@
  * Class LotRecord
  * Класс для представления одной записи таблицы лотов
  */
-class LotRecord
+class LotRecord extends BaseRecord
 {
-    protected $tableName = 'lot';
-
     /**
      * @var int $id Идентификатор лота
      */
-    private $id;
+    public $id;
 
     /**
      * @var int $category_id Идентификатор категории
      */
-    private $category_id;
+    public $category_id;
 
     /**
      * @var int $user_id Идентификатор автора публикации
      */
-    private $user_id;
+    public $user_id;
 
     /**
      * @var int $winner_id Идентификатор победителя
      */
-    private $winner_id;
+    public $winner_id;
 
     /**
      * @var string $date_add Дата добавления в таблицу
      */
-    private $date_add;
+    public $date_add;
 
     /**
      * @var string $date_add Дата закрытия лота
      */
-    private $date_close;
+    public $date_close;
 
     /**
      * @var string $title Название лота
      */
-    private $title;
+    public $title;
 
     /**
      * @var string $description Описание лота
      */
-    private $description;
+    public $description;
 
     /**
      * @var string $image Путь до изображения
      */
-    private $image;
+    public $image;
 
     /**
      * @var int $initial_rate Начальная ставка
      */
-    private $initial_rate;
+    public $initial_rate;
 
     /**
      * @var int $rate_step Шаг ставки
      */
-    private $rate_step;
+    public $rate_step;
 
     /**
      * @var int $fav_count Число добавлений в избранное
      */
-    private $fav_count;
+    public $fav_count;
 
     /**
      * Поля смежных таблиц
      */
-    private $category_name;
-    private $user_name;
+    public $category_name;
+
+    /**
+     * @return string
+     */
+    protected function getTableName()
+    {
+        return 'lot';
+    }
 }

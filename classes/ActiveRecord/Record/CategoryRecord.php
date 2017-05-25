@@ -4,17 +4,23 @@
  * Class CategoryRecord
  * Класс для представления одной записи таблицы категорий
  */
-class CategoryRecord
+class CategoryRecord extends BaseRecord
 {
-    protected $tableName = 'category';
-
     /**
      * @var int $id Идентификатор категории
      */
-    private $id;
+    public $id;
 
     /**
      * @var string $name Имя категории
      */
-    private $name;
+    public $name;
+
+    /**
+     * @return string
+     */
+    protected function getTableName()
+    {
+        return 'category';
+    }
 }

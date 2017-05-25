@@ -35,7 +35,7 @@ $lots = $data['lots'];
             <select class="lots__select">
                 <option>Все категории</option>
                 <?php foreach ($categories as $category): ?>
-                    <option><?= $category['name'] ?></option>
+                    <option><?= $category->name ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -44,19 +44,19 @@ $lots = $data['lots'];
                 <?php foreach ($lots as $lot): ?>
                     <li class="lots__item lot">
                         <div class="lot__image">
-                            <img src=<?= $lot['image'] ?> width="350" height="260" alt="Сноуборд">
+                            <img src=<?= $lot->image ?> width="350" height="260" alt="Сноуборд">
                         </div>
                         <div class="lot__info">
-                            <span class="lot__category"><?= $lot['category'] ?></span>
+                            <span class="lot__category"><?= $lot->category_name ?></span>
                             <h3 class="lot__title"><a class="text-link"
-                                                      href="lot.php?id=<?= $lot['id'] ?>"><?= $lot['title'] ?></a></h3>
+                                                      href="lot.php?id=<?= $lot->id ?>"><?= $lot->title ?></a></h3>
                             <div class="lot__state">
                                 <div class="lot__rate">
                                     <span class="lot__amount">Стартовая цена</span>
-                                    <span class="lot__cost"><?= $lot['initial_rate'] ?><b class="rub">р</b></span>
+                                    <span class="lot__cost"><?= $lot->initial_rate ?><b class="rub">р</b></span>
                                 </div>
                                 <div class="lot__timer timer">
-                                    <?= calculateRemainingTime($lot['date_close']) ?>
+                                    <?= calculateRemainingTime($lot->date_close) ?>
                                 </div>
                             </div>
                         </div>

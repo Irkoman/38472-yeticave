@@ -16,10 +16,10 @@ class Database
     private $error = '';
 
     /**
+     * Database constructor
      * Устанавливает соединение
-     * @return mysqli|bool
      */
-    public function connect()
+    public function __construct()
     {
         $this->link = mysqli_connect('localhost', 'root', '', 'yeticave');
 
@@ -28,8 +28,6 @@ class Database
             header('HTTP/1.1 500 Internal Server Error');
             header('Location: /500.php');
         }
-
-        return $this->link;
     }
 
     /**
@@ -111,7 +109,7 @@ class Database
      * Выполняет запрос на добавление новых данных
      * @param string $sql Запрос
      * @param array $values Значения для подготовленного выражения
-     * @return int|bool
+     * @return int
      */
     public function insert($sql, $values = [])
     {
@@ -122,7 +120,8 @@ class Database
         if ($last_id > 0) {
             return $last_id;
         } else {
-            return false;
+            header('HTTP/1.1 500 Internal Server Error');
+            header('Location: /500.php');
         }
     }
 
@@ -133,7 +132,7 @@ class Database
      * @param array $conditions Поля и их значения в условии WHERE
      * @return int|bool
      */
-    public function update($table, $updates, $conditions)
+    public function update($table, $updates, $conditions = [])
     {
         $updatesToString = "";
         $conditionsToString = "";
@@ -154,6 +153,35 @@ class Database
         $updatesToString = substr($updatesToString, 0, -2);
         $conditionsToString = substr($conditionsToString, 0, -5);
         $sql = "UPDATE $table SET $updatesToString WHERE $conditionsToString;";
+
+        $stmt = $this->getPrepareStmt($sql, $values);
+        mysqli_stmt_execute($stmt);
+        $rows_count = mysqli_stmt_affected_rows($stmt);
+
+        if ($rows_count > 0) {
+            return $rows_count;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Выполняет запрос на удаление записи
+     * @param string $table Имя таблицы
+     * @param array $conditions Поля и их значения в условии WHERE
+     * @return int|bool
+     */
+    public function delete($table, $conditions = [])
+    {
+        $values = [];
+        $conditionsToString = "";
+
+        foreach ($conditions as $column => $value) {
+            $conditionsToString .= "$column = ? AND ";
+            $values[] = $value;
+        }
+
+        $sql = "DELETE FROM $table WHERE $conditionsToString;";
 
         $stmt = $this->getPrepareStmt($sql, $values);
         mysqli_stmt_execute($stmt);

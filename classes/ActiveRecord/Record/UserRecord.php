@@ -4,52 +4,48 @@
  * Class UserRecord
  * Класс для представления одной записи таблицы пользователей
  */
-class UserRecord
+class UserRecord extends BaseRecord
 {
-    protected $tableName = 'user';
-
     /**
      * @var int $id Идентификатор пользователя
      */
-    private $id;
+    public $id;
 
     /**
      * @var string $email Почта
      */
-    private $email;
+    public $email;
 
     /**
      * @var string $password Пароль
      */
-    private $password;
+    public $password;
 
     /**
      * @var string $name Имя пользователя
      */
-    private $name;
+    public $name;
 
     /**
      * @var string $avatar Путь до изображения
      */
-    private $avatar;
+    public $avatar;
 
     /**
      * @var string $contact Контакты
      */
-    private $contact;
+    public $contact;
 
     /**
      * @var string $date_add Дата добавления в таблицу
      */
-    private $date_add;
+    public $date_add;
 
     /**
-     * Смена пароля
-     * @param string $newPassword
-     * @return bool
+     * @return string
      */
-    public function changePassword($newPassword)
+    protected function getTableName()
     {
-
+        return 'user';
     }
 }
