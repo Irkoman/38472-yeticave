@@ -1,4 +1,8 @@
 <?php
+namespace yeticave\forms;
+
+use yeticave\services\Database;
+use yeticave\ActiveRecord\Record\UserRecord;
 
 /**
  * Class SignupForm

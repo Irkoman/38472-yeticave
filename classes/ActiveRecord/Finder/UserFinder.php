@@ -1,4 +1,5 @@
 <?php
+namespace yeticave\ActiveRecord\Finder;
 
 /**
  * Class UserFinder

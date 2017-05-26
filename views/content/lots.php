@@ -1,4 +1,6 @@
 <?php
+use yeticave\services\Formatter;
+
 $categoryModel = $data['categoryModel'];
 $categories = $categoryModel->finder->findCategories();
 

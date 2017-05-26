@@ -1,4 +1,7 @@
 <?php
+namespace yeticave\ActiveRecord\Finder;
+
+use yeticave\ActiveRecord\Record\LotRecord;
 
 /**
  * Class LotFinder
@@ -10,14 +13,21 @@ class LotFinder extends BaseFinder
     /**
      * Поиск по лотам и смежным таблицам
      * @param int $id
-     * @return LotRecord Объект класса LotRecord
+     * @return LotRecord|bool Объект класса LotRecord
      */
     public function findLotById($id)
     {
         $sql = 'SELECT lot.id, lot.title, lot.description, lot.initial_rate, lot.image, lot.date_close, category.name AS category_name
                 FROM lot JOIN category ON lot.category_id = category.id WHERE lot.id = ?';
 
-        return parent::selectOne($sql, 'LotRecord', [$id]);
+        $row = parent::selectOne($sql, [$id]);
+
+        if ($row) {
+            $record = new LotRecord();
+            return $record->fillRecord($row);
+        }
+
+        return false;
     }
 
     /**
@@ -31,6 +41,14 @@ class LotFinder extends BaseFinder
                 WHERE lot.date_close > NOW() AND lot.winner_id IS NULL
                 ORDER BY lot.date_add DESC LIMIT 6';
 
-        return parent::selectAll($sql, 'LotRecord');
+        $rows = parent::selectAll($sql);
+        $records = [];
+
+        foreach ($rows as $row) {
+            $record = new LotRecord();
+            $records[] = $record->fillRecord($row);
+        }
+
+        return $records;
     }
 }

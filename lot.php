@@ -1,6 +1,13 @@
 <?php
 require_once 'init.php';
 
+use yeticave\services\Template;
+use yeticave\models\CategoryModel;
+use yeticave\models\UserModel;
+use yeticave\models\LotModel;
+use yeticave\models\BetModel;
+use yeticave\forms\BetForm;
+
 $id = intval($_GET['id']);
 $categoryModel = new CategoryModel();
 $userModel = new UserModel();

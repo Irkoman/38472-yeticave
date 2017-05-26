@@ -1,4 +1,7 @@
 <?php
+namespace yeticave\ActiveRecord\Finder;
+
+use yeticave\services\Database;
 
 /**
  * Class BaseFinder
@@ -30,51 +33,24 @@ abstract class BaseFinder
     /**
      * Выполняет запрос на получение одной записи
      * @param $sql string Запрос
-     * @param string $className Имя класса
      * @param array $data Массив с данными для вставки в запрос
-     * @return *Record|bool
+     * @return array|bool
      */
-    public static function selectOne($sql, $className, $data = [])
+    public static function selectOne($sql, $data = [])
     {
         $database = new Database();
-        $row = $database->select($sql, $data)[0];
-
-        if ($row) {
-            $record = new $className($database);
-
-            foreach ($row as $key => $value) {
-                $record->$key = $value;
-            }
-
-            return $record;
-        }
-
-        return false;
+        return $database->select($sql, $data)[0];
     }
 
     /**
      * Выполняет запрос на получение всех записей, соответствующих условию
      * @param $sql string Запрос
-     * @param string $className Имя класса
      * @param array $data Массив с данными для вставки в запрос
-     * @return array Массив объектов класса *Record
+     * @return array
      */
-    public static function selectAll($sql, $className, $data = [])
+    public static function selectAll($sql, $data = [])
     {
-        $records = [];
         $database = new Database();
-        $rows = $database->select($sql, $data);
-
-        foreach ($rows as $row) {
-            $record = new $className($database);
-
-            foreach ($row as $key => $value) {
-                $record->$key = $value;
-            }
-
-            $records[] = $record;
-        }
-
-        return $records;
+        return $database->select($sql, $data);
     }
 }

@@ -1,6 +1,11 @@
 <?php
 require_once 'init.php';
 
+use yeticave\services\Template;
+use yeticave\models\CategoryModel;
+use yeticave\models\UserModel;
+use yeticave\forms\LotForm;
+
 $userModel = new UserModel();
 
 if (!$userModel->isAuth()) {

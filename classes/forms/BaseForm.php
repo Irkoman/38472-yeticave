@@ -1,4 +1,5 @@
 <?php
+namespace yeticave\forms;
 
 /**
  * Class BaseForm

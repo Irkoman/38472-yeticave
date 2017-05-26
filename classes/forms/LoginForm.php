@@ -1,4 +1,7 @@
 <?php
+namespace yeticave\forms;
+
+use yeticave\models\UserModel;
 
 /**
  * Class LoginForm

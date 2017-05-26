@@ -1,15 +1,15 @@
 <?php
+namespace yeticave\models;
+
+use yeticave\services\Database;
+use yeticave\ActiveRecord\Finder\UserFinder;
+use yeticave\ActiveRecord\Record\UserRecord;
 
 /**
  * Class UserModel
  */
 class UserModel extends BaseModel
 {
-    /**
-     * @var string $name
-     */
-    protected $name = 'User';
-
     /**
      * @var array $userdata Ассоциативный массив с данными пользователя
      */
@@ -87,7 +87,7 @@ class UserModel extends BaseModel
     public function logout()
     {
         unset($_SESSION['user']);
-        header("Location: /index.php");
+        header('Location: /index.php');
     }
 
     /**

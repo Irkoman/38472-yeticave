@@ -1,4 +1,9 @@
 <?php
+namespace yeticave\forms;
+
+use yeticave\models\BetModel;
+use yeticave\models\UserModel;
+use yeticave\ActiveRecord\Record\BetRecord;
 
 /**
  * Class BetForm

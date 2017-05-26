@@ -1,4 +1,6 @@
 <?php
+use yeticave\services\Template;
+
 $title = $data['title'];
 $content = $data['content'];
 ?>

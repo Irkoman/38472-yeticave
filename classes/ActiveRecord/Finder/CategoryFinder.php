@@ -1,4 +1,7 @@
 <?php
+namespace yeticave\ActiveRecord\Finder;
+
+use yeticave\ActiveRecord\Record\CategoryRecord;
 
 /**
  * Class CategoryFinder
@@ -15,6 +18,14 @@ class CategoryFinder extends BaseFinder
     {
         $sql = "SELECT * FROM category";
 
-        return parent::selectAll($sql, 'CategoryRecord');
+        $rows = parent::selectAll($sql);
+        $records = [];
+
+        foreach ($rows as $row) {
+            $record = new CategoryRecord();
+            $records[] = $record->fillRecord($row);
+        }
+
+        return $records;
     }
 }

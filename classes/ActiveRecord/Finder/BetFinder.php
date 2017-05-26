@@ -1,4 +1,7 @@
 <?php
+namespace yeticave\ActiveRecord\Finder;
+
+use yeticave\ActiveRecord\Record\BetRecord;
 
 /**
  * Class BetFinder
@@ -18,7 +21,15 @@ class BetFinder extends BaseFinder
                 FROM bet JOIN user ON bet.user_id = user.id
                 WHERE bet.lot_id = ? ORDER BY bet.date_add DESC LIMIT 5';
 
-        return parent::selectAll($sql, 'BetRecord', [$id]);
+        $rows = parent::selectAll($sql, [$id]);
+        $records = [];
+
+        foreach ($rows as $row) {
+            $record = new BetRecord();
+            $records[] = $record->fillRecord($row);
+        }
+
+        return $records;
     }
 
     /**
@@ -32,6 +43,14 @@ class BetFinder extends BaseFinder
                 FROM bet JOIN lot ON lot.id = bet.lot_id JOIN category ON category.id = lot.category_id
                 WHERE bet.user_id = ?';
 
-        return parent::selectAll($sql, 'BetRecord', [$id]);
+        $rows = parent::selectAll($sql, [$id]);
+        $records = [];
+
+        foreach ($rows as $row) {
+            $record = new BetRecord();
+            $records[] = $record->fillRecord($row);
+        }
+
+        return $records;
     }
 }

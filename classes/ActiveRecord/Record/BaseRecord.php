@@ -1,4 +1,7 @@
 <?php
+namespace yeticave\ActiveRecord\Record;
+
+use yeticave\services\Database;
 
 /**
  * Class BaseRecord
@@ -28,6 +31,19 @@ abstract class BaseRecord
         if (property_exists($this, $name)) {
             $this->$name = $value;
         }
+    }
+
+    /**
+     * @param array $row Строка с данными
+     * @return *Record Объект *Record с заполненными полями
+     */
+    public function fillRecord($row)
+    {
+        foreach ($row as $key => $value) {
+            $this->$key = $value;
+        }
+
+        return $this;
     }
 
     /**

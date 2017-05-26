@@ -1,4 +1,6 @@
 <?php
+use yeticave\services\Formatter;
+
 $id = $data['id'];
 
 $lotModel = $data['lotModel'];

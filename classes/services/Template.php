@@ -1,4 +1,5 @@
 <?php
+namespace yeticave\services;
 
 /**
  * Class Template
@@ -11,7 +12,7 @@ class Template
      * @param array $data Ассоциативный массив с данными
      * @return string HTML страницы
      */
-    public function render($path, $data)
+    public static function render($path, $data)
     {
         if (!file_exists($path)) {
             return '';

@@ -1,4 +1,8 @@
 <?php
+namespace yeticave\models;
+
+use yeticave\ActiveRecord\Finder\LotFinder;
+use yeticave\ActiveRecord\Record\LotRecord;
 
 /**
  * Class LotModel
@@ -6,7 +10,11 @@
 class LotModel extends BaseModel
 {
     /**
-     * @var string $name Будет использоваться конструктором
+     * LotModel constructors
      */
-    protected $name = 'Lot';
+    public function __construct()
+    {
+        $this->finder = new LotFinder();
+        $this->record = new LotRecord();
+    }
 }

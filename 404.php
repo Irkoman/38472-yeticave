@@ -1,6 +1,10 @@
 <?php
 require_once 'init.php';
 
+use yeticave\services\Template;
+use yeticave\models\CategoryModel;
+use yeticave\models\UserModel;
+
 $categoryModel = new CategoryModel();
 $userModel = new UserModel();
 

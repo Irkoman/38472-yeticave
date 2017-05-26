@@ -1,4 +1,8 @@
 <?php
+namespace yeticave\models;
+
+use yeticave\ActiveRecord\Finder\BetFinder;
+use yeticave\ActiveRecord\Record\BetRecord;
 
 /**
  * Class BetModel
@@ -6,9 +10,13 @@
 class BetModel extends BaseModel
 {
     /**
-     * @var string $name Будет использоваться конструктором
+     * BetModel constructor
      */
-    protected $name = 'Bet';
+    public function __construct()
+    {
+        $this->finder = new BetFinder();
+        $this->record = new BetRecord();
+    }
 
     /**
      * @return array Ставки пользователя, найденные в куках

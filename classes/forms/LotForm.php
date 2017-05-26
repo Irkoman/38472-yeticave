@@ -1,4 +1,8 @@
 <?php
+namespace yeticave\forms;
+
+use yeticave\models\UserModel;
+use yeticave\ActiveRecord\Record\LotRecord;
 
 /**
  * Class LotForm

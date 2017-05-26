@@ -2,5 +2,10 @@
   "name": "yeticave",
   "description": "Личный проект «YetiCave» от HTML Academy",
   "type": "project",
-  "require": {}
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "yeticave\\" : "classes/"
+    }
+  }
 }

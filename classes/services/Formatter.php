@@ -1,4 +1,5 @@
 <?php
+namespace yeticave\services;
 
 /**
  * Class Formatter

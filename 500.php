@@ -1,6 +1,8 @@
 <?php
 require_once 'init.php';
 
+use yeticave\services\Template;
+
 $content = [
     'path' => 'views/content/error.php',
     'models' => [
