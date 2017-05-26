@@ -1,6 +1,10 @@
 <?php
-$categories = $data['categories'];
-$errors = $data['errors'];
+$categoryModel = $data['categoryModel'];
+$categories = $categoryModel->finder->findCategories();
+
+$formModel = $data['formModel'];
+$formdata = $formModel->getFormdata();
+$errors = $formModel->getAllErrors();
 ?>
 
 <main>
@@ -8,7 +12,7 @@ $errors = $data['errors'];
         <ul class="nav__list container">
             <?php foreach ($categories as $category): ?>
                 <li class="nav__item">
-                    <a href="all-lots.html"><?= $category['name'] ?></a>
+                    <a href="all-lots.html"><?= $category->name ?></a>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -18,7 +22,7 @@ $errors = $data['errors'];
         <h2>Регистрация нового аккаунта</h2>
         <div class="form__item <?= !empty($errors['email']) ? 'form__item--invalid' : '' ?>">
             <label for="email">E-mail*</label>
-            <input id="email" type="text" name="email" value="<?= isset($_POST['email']) ? $_POST['email'] : '' ?>"
+            <input id="email" type="text" name="email" value="<?= !empty($formdata['email']) ? $formdata['email'] : '' ?>"
                    placeholder="Введите e-mail">
             <span class="form__error"><?= !empty($errors['email']) ? $errors['email'] : '' ?></span>
         </div>
@@ -29,22 +33,22 @@ $errors = $data['errors'];
         </div>
         <div class="form__item <?= !empty($errors['name']) ? 'form__item--invalid' : '' ?>">
             <label for="name">Имя*</label>
-            <input id="name" type="text" name="name" value="<?= isset($_POST['name']) ? $_POST['name'] : '' ?>"
+            <input id="name" type="text" name="name" value="<?= !empty($formdata['name']) ? $formdata['name'] : '' ?>"
                    placeholder="Введите имя">
             <span class="form__error"><?= !empty($errors['name']) ? $errors['name'] : '' ?></span>
         </div>
         <div class="form__item <?= !empty($errors['message']) ? 'form__item--invalid' : '' ?>">
             <label for="message">Контактные данные*</label>
-            <textarea id="message" name="message" value="<?= isset($_POST['message']) ? $_POST['message'] : '' ?>"
-                      placeholder="Напишите, как с вами связаться"></textarea>
+            <textarea id="message" name="message" value="<?= !empty($formdata['message']) ? $formdata['message'] : '' ?>"
+                      placeholder="Напишите, как с вами связаться"><?= !empty($formdata['message']) ? $formdata['message'] : '' ?></textarea>
             <span class="form__error"><?= !empty($errors['message']) ? $errors['message'] : '' ?></span>
         </div>
-        <div class="form__item form__item--file form__item--last">
+        <div class="form__item form__item--file form__item--last <?= empty($errors['avatar']) && !empty($formdata['avatar']['name']) ? 'form__item--uploaded' : '' ?>">
             <label>Изображение</label>
             <div class="preview">
                 <button class="preview__remove" type="button">x</button>
                 <div class="preview__img">
-                    <img src="<?= empty($errors['avatar']) && !empty($file['tmp_name']) ? '../img/' . $file['name'] : '' ?>"
+                    <img src="<?= empty($errors['avatar']) && !empty($formdata['avatar']['name']) ? '../img/upload/' . $formdata['avatar']['name'] : '' ?>"
                          width="113" height="113" alt="Аватар">
                 </div>
             </div>

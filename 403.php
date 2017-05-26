@@ -1,25 +1,23 @@
 <?php
 require_once 'init.php';
-?>
 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>403</title>
-    <link href="css/normalize.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-</head>
-<body>
+use yeticave\services\Template;
+use yeticave\models\CategoryModel;
+use yeticave\models\UserModel;
 
-<?= includeTemplate('templates/header.php') ?>
+$categoryModel = new CategoryModel();
+$userModel = new UserModel();
 
-<div class="error">
-    <h1 class="error__title">403</h1>
-    <p>Добавлять лоты и участвовать в торгах<br>могут только зарегистрированные пользователи</p>
-</div>
+$content = [
+    'path' => 'views/content/error.php',
+    'models' => [
+        'categoryModel' => $categoryModel,
+        'userModel' => $userModel,
+        'error' => [
+            'title' => '403',
+            'text' => 'Добавлять лоты и участвовать в торгах<br>могут только зарегистрированные пользователи'
+        ]
+    ]
+];
 
-<?= includeTemplate('templates/footer.php') ?>
-
-</body>
-</html>
+echo Template::render('views/base.php', ['title' => '403', 'content' => $content]);

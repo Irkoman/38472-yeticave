@@ -1,10 +1,16 @@
 <?php
+namespace yeticave\forms;
 
 /**
  * Class BaseForm
  */
-class BaseForm
+abstract class BaseForm
 {
+    /**
+     * @var string $formName Имя формы
+     */
+    public $formName;
+
     /**
      * @var array $fields Список полей формы
      */
@@ -24,11 +30,6 @@ class BaseForm
      * @var array $formData Отправленные данные
      */
     protected $formData = [];
-
-    /**
-     * @var string $formName Имя формы
-     */
-    public $formName;
 
     /**
      * BaseForm constructor

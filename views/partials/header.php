@@ -1,5 +1,8 @@
 <?php
-$user = $_SESSION['user'];
+if (!empty($data['userModel'])) {
+    $userModel = $data['userModel'];
+    $userdata = $userModel->getUserdata();
+}
 ?>
 
 <header class="main-header">
@@ -14,13 +17,13 @@ $user = $_SESSION['user'];
         </form>
         <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
         <nav class="user-menu">
-            <?php if (isset($user)): ?>
+            <?php if (!empty($userModel) && $userModel->isAuth()): ?>
                 <div class="user-menu__image">
-                    <img src="<?= !empty($user['avatar']) ? $user['avatar'] : '' ?>" width="40" height="40"
+                    <img src="<?= !empty($userdata['avatar']) ? $userdata['avatar'] : 'img/upload/success-kid.jpg' ?>" width="40" height="40"
                          alt="Пользователь">
                 </div>
                 <div class="user-menu__logged">
-                    <p><?= strip_tags($user['name']) ?></p>
+                    <p><?= strip_tags($userdata['name']) ?></p>
                     <a href="logout.php">Выйти</a>
                 </div>
             <?php else: ?>

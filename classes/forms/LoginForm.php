@@ -1,4 +1,7 @@
 <?php
+namespace yeticave\forms;
+
+use yeticave\models\UserModel;
 
 /**
  * Class LoginForm
@@ -15,6 +18,21 @@ class LoginForm extends BaseForm
     ];
 
     /**
+     * Полная проверка формы и создание объекта юзера в случае успеха
+     */
+    public function checkLoginForm()
+    {
+        if ($this->isSubmitted()) {
+            $this->validate();
+
+            if ($this->isValid()) {
+                $userModel = new UserModel($this->getFormdata()['email'], $this->getFormdata()['password']);
+                $this->errors = $userModel->authErrors;
+            }
+        }
+    }
+
+    /**
      * Проверяет email на корректность
      * @param array $fields Список полей для проверки
      * @return bool Результат проверки
@@ -29,7 +47,7 @@ class LoginForm extends BaseForm
             if (!filter_var($field, FILTER_VALIDATE_EMAIL)) {
                 $result = false;
 
-                $this->errors[$value] = "Введите корректный email";
+                $this->errors[$value] = 'Введите корректный email';
             }
         }
 

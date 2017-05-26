@@ -1,25 +1,16 @@
 <?php
 require_once 'init.php';
-?>
 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>500</title>
-    <link href="css/normalize.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-</head>
-<body>
+use yeticave\services\Template;
 
-<?= includeTemplate('templates/header.php') ?>
+$content = [
+    'path' => 'views/content/error.php',
+    'models' => [
+        'error' => [
+            'title' => '500',
+            'text' => 'Ошибка обработки запроса'
+        ]
+    ]
+];
 
-<div class="error">
-    <h1 class="error__title">500</h1>
-    <p>Ошибка обработки запроса</p>
-</div>
-
-<?= includeTemplate('templates/footer.php') ?>
-
-</body>
-</html>
+echo Template::render('views/base.php', ['title' => '500', 'content' => $content]);

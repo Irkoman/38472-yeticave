@@ -1,32 +1,22 @@
 <?php
 require_once 'init.php';
 
-$database = new Database();
-$database->connect();
-$categories = $database->select('SELECT * FROM category');
+use yeticave\services\Template;
+use yeticave\models\CategoryModel;
+use yeticave\models\LotModel;
+use yeticave\models\UserModel;
 
-$sql = '
-  SELECT lot.id, lot.title, lot.initial_rate, lot.image, lot.date_close, category.name AS category
-  FROM lot JOIN category ON lot.category_id = category.id
-  WHERE lot.date_close > NOW() AND lot.winner_id IS NULL
-  ORDER BY lot.date_add DESC LIMIT 6
-';
-$lots = $database->select($sql);
-?>
+$categoryModel = new CategoryModel();
+$lotModel = new LotModel();
+$userModel = new UserModel();
 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Главная</title>
-    <link href="css/normalize.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-</head>
-<body>
+$content = [
+    'path' => 'views/content/lots.php',
+    'models' => [
+        'categoryModel' => $categoryModel,
+        'lotModel' => $lotModel,
+        'userModel' => $userModel
+    ]
+];
 
-<?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/lots.php', ['categories' => $categories, 'lots' => $lots]) ?>
-<?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
-
-</body>
-</html>
+echo Template::render('views/base.php', ['title' => 'Главная', 'content' => $content]);

@@ -1,5 +1,8 @@
 <?php
-$categories = $data['categories'];
+if (!empty($data['categoryModel'])) {
+    $categoryModel = $data['categoryModel'];
+    $categories = $categoryModel->finder->findCategories();
+}
 ?>
 
 <footer class="main-footer">
@@ -8,7 +11,7 @@ $categories = $data['categories'];
             <ul class="nav__list container">
                 <?php foreach ($categories as $category): ?>
                     <li class="nav__item">
-                        <a href="all-lots.html"><?= $category['name'] ?></a>
+                        <a href="all-lots.html"><?= $category->name ?></a>
                     </li>
                 <?php endforeach; ?>
             </ul>

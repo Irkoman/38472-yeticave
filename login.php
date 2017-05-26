@@ -1,39 +1,23 @@
 <?php
 require_once 'init.php';
 
-$errors = [];
+use yeticave\services\Template;
+use yeticave\models\CategoryModel;
+use yeticave\models\UserModel;
+use yeticave\forms\LoginForm;
 
-$database = new Database();
-$database->connect();
-$categories = $database->select('SELECT * FROM category');
+$categoryModel = new CategoryModel();
+$userModel = new UserModel();
+$formModel = new LoginForm();
+$formModel->checkLoginForm();
 
-$form = new LoginForm();
+$content = [
+    'path' => 'views/content/login.php',
+    'models' => [
+        'categoryModel' => $categoryModel,
+        'formModel' => $formModel,
+        'userModel' => $userModel
+    ]
+];
 
-if ($form->isSubmitted()) {
-    $form->validate();
-    $errors = $form->getAllErrors();
-
-    if ($form->isValid()) {
-        $formdata = $form->getFormdata();
-        $user = new User($database, $formdata['email'], $formdata['password']);
-        $errors = $user->authErrors;
-    }
-}
-?>
-
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Вход</title>
-    <link href="css/normalize.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-</head>
-<body>
-
-<?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/login.php', ['categories' => $categories, 'errors' => $errors]) ?>
-<?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
-
-</body>
-</html>
+echo Template::render('views/base.php', ['title' => 'Вход', 'content' => $content]);

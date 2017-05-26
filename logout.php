@@ -1,6 +1,8 @@
 <?php
 require_once 'init.php';
 
-$user = new User();
-$user->logout();
+use yeticave\models\UserModel;
+
+$userModel = new UserModel();
+$userModel->logout();
 ?>

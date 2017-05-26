@@ -1,70 +1,29 @@
 <?php
 require_once 'init.php';
 
-$user = new User();
+use yeticave\services\Template;
+use yeticave\models\CategoryModel;
+use yeticave\models\UserModel;
+use yeticave\forms\LotForm;
 
-if (!$user->isAuth()) {
-    header('HTTP/1.1 403 Forbidden');
+$userModel = new UserModel();
+
+if (!$userModel->isAuth()) {
+    header("HTTP/1.1 403 Forbidden");
     header('Location: /403.php');
 }
 
-$errors = [];
-$file = [];
+$categoryModel = new CategoryModel();
+$formModel = new LotForm();
+$formModel->checkLotForm();
 
-$database = new Database();
-$database->connect();
-$categories = $database->select('SELECT * FROM category');
+$content = [
+    'path' => 'views/content/add.php',
+    'models' => [
+        'categoryModel' => $categoryModel,
+        'formModel' => $formModel,
+        'userModel' => $userModel
+    ]
+];
 
-$form = new LotForm();
-
-if ($form->isSubmitted()) {
-    $form->validate();
-    $errors = $form->getAllErrors();
-    $formdata = $form->getFormdata();
-    $file = $formdata['lot-file'];
-
-    if ($form->isValid()) {
-        $data = [
-            date('Y-m-d H:i:s', strtotime($formdata['lot-date'])),
-            $formdata['category'],
-            $user->getUserdata()['id'],
-            $formdata['lot-name'],
-            $formdata['message'],
-            'img/' . $file['name'],
-            $formdata['lot-rate'],
-            $formdata['lot-step']
-        ];
-
-        $sql = '
-      INSERT INTO lot
-      (date_add, date_close, category_id, user_id, title, description, image, initial_rate, rate_step, fav_count)
-      VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, 0)
-    ';
-        $lot_id = $database->insert($sql, $data);
-
-        if ($lot_id) {
-            header("Location: /lot.php?id=" . $lot_id);
-        } else {
-            header('HTTP/1.1 500 Internal Server Error');
-            header('Location: /500.php');
-        }
-    }
-}
-?>
-
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Добавление лота</title>
-    <link href="css/normalize.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-</head>
-<body>
-
-<?= includeTemplate('templates/header.php') ?>
-<?= includeTemplate('templates/add.php', ['categories' => $categories, 'errors' => $errors, 'file' => $file]) ?>
-<?= includeTemplate('templates/footer.php', ['categories' => $categories]) ?>
-
-</body>
-</html>
+echo Template::render('views/base.php', ['title' => 'Добавление лота', 'content' => $content]);

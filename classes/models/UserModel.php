@@ -1,9 +1,14 @@
 <?php
+namespace yeticave\models;
+
+use yeticave\services\Database;
+use yeticave\ActiveRecord\Finder\UserFinder;
+use yeticave\ActiveRecord\Record\UserRecord;
 
 /**
- * Class User
+ * Class UserModel
  */
-class User
+class UserModel extends BaseModel
 {
     /**
      * @var array $userdata Ассоциативный массив с данными пользователя
@@ -26,9 +31,11 @@ class User
      * @param string $email Почта
      * @param string $password Пароль
      */
-    public function __construct($database, $email = null, $password = null)
+    public function __construct($email = null, $password = null)
     {
-        $this->database = $database;
+        $this->finder = new UserFinder();
+        $this->record = new UserRecord();
+        $this->database = new Database();
 
         if ($email && $password) {
             $this->login($email, $password);
@@ -80,7 +87,7 @@ class User
     public function logout()
     {
         unset($_SESSION['user']);
-        header("Location: /index.php");
+        header('Location: /index.php');
     }
 
     /**
