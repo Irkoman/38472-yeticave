@@ -18,7 +18,7 @@ class Formatter
                 $data[$key] = self::secureData($value);
             }
             return $data;
-        } else {
+        } elseif (is_string($data)) {
             return htmlspecialchars($data);
         }
     }
@@ -41,7 +41,7 @@ class Formatter
             return date('d дней', $time);
         } else {
             return date('H:i', $time);
-        };
+        }
     }
 
     /**
@@ -60,6 +60,6 @@ class Formatter
             return date('i минут назад', $time);
         } else {
             return date('G часов назад', $time);
-        };
+        }
     }
 }

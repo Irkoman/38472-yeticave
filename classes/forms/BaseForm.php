@@ -1,6 +1,8 @@
 <?php
 namespace yeticave\forms;
 
+use Respect\Validation\Validator as v;
+
 /**
  * Class BaseForm
  */
@@ -17,14 +19,25 @@ abstract class BaseForm
     protected $fields = [];
 
     /**
+     * @var array $validators Набор валидаторов,
+     * позаимствованных из библиотеки Respect\Validation
+     */
+    public $validators = [];
+
+    /**
      * @var array $errors Список ошибок валидации
      */
     protected $errors = [];
 
     /**
-     * @var array $rules Список правил валидации
+     * @var array $rules Список правил валидации для конкретной формы
      */
     protected $rules = [];
+
+    /**
+     * @var array $messages Тексты ошибок
+     */
+    protected $messages = [];
 
     /**
      * @var array $formData Отправленные данные
@@ -38,6 +51,36 @@ abstract class BaseForm
     public function __construct($data = [])
     {
         $this->fillFormData($data);
+        $this->initValidators();
+        $this->initMessages();
+    }
+
+    /**
+     * Инициализация списка валидаторов
+     * @return void
+     */
+    public function initValidators()
+    {
+        $this->validators['notEmpty'] = v::notEmpty();
+        $this->validators['numeric']  = v::numeric()->positive();
+        $this->validators['date']     = v::date('d.m.Y');
+        $this->validators['email']    = v::email();
+        $this->validators['image']    = v::image();
+    }
+
+    /**
+     * Инициализация списка кастомных сообщений об ошибках
+     * @return void
+     */
+    public function initMessages()
+    {
+        $this->messages = [
+            'notEmpty' => 'Заполните это поле',
+            'numeric'  => 'Здесь должно быть число',
+            'email'    => 'Введите корректный email',
+            'date'     => 'Некорректная дата',
+            'image'    => 'Допустимые форматы изображений: jpeg, png, gif, tiff',
+        ];
     }
 
     /**
@@ -59,6 +102,23 @@ abstract class BaseForm
     }
 
     /**
+     * Заполняет formData данными из формы
+     * @param array $data Данные для заполнения
+     */
+    protected function fillFormData($data = [])
+    {
+        if (!$this->isSubmitted()) {
+            return;
+        }
+
+        $fillData = !empty($data) ? $data : array_merge($_POST, $_FILES);
+
+        foreach ($this->fields as $field) {
+            $this->formData[$field] = array_key_exists($field, $fillData) ? $fillData[$field] : null;
+        }
+    }
+
+    /**
      * Возвращает данные, отправленные из формы
      * @return array
      */
@@ -68,7 +128,20 @@ abstract class BaseForm
     }
 
     /**
-     * Возвращает текст ошибки для поля
+     * Выполняет валидацию формы
+     * @return void
+     */
+    public function validate()
+    {
+        foreach ($this->rules as $rule) {
+            list($rulename, $fields) = $rule;
+
+            $this->runValidator($rulename, $fields);
+        }
+    }
+
+    /**
+     * Возвращает текст ошибки для конкретного поля
      * @param string $field Имя поля
      * @return string|null Текст ошибки
      */
@@ -87,28 +160,17 @@ abstract class BaseForm
     }
 
     /**
-     * Выполняет валидацию формы
+     * Сохраняет в папку upload загруженное пользователем
+     * и успешно прошедшее валидацию изображение
+     * @param string $field_name Имя поля с изображением
      * @return void
      */
-    public function validate()
+    public function saveImage($field_name)
     {
-        foreach ($this->rules as $rule) {
-            list($rulename, $fields) = $rule;
-
-            $this->runValidator($rulename, $fields);
+        if (empty($this->errors[$field_name]) && !empty($_FILES[$field_name])) {
+            $file = $_FILES[$field_name];
+            move_uploaded_file($file['tmp_name'], 'img/upload/' . $file['name']);
         }
-    }
-
-    /**
-     * Магический метод для получения значения поля по его имени
-     * @param string $name Имя поля
-     * @return mixed|null
-     */
-    public function __get($name)
-    {
-        $result = $this->formData[$name] ?? null;
-
-        return $result;
     }
 
     /**
@@ -118,47 +180,13 @@ abstract class BaseForm
      */
     protected function runValidator($name, $fields)
     {
-        $method_name = 'run' . ucfirst($name) . 'Validator';
+        foreach ($fields as $field){
+            $validator = $this->validators[$name];
+            $fieldToValidate = !empty($_FILES[$field]['tmp_name']) ? $this->formData[$field]['tmp_name'] : $this->formData[$field];
 
-        if (method_exists($this, $method_name)) {
-            $this->$method_name($fields);
-        }
-    }
-
-    /**
-     * Проверяет поля на заполненность
-     * @param array $fields Поля для проверки
-     * @return bool Результат проверки
-     */
-    protected function runRequiredValidator($fields)
-    {
-        $result = true;
-
-        foreach ($fields as $key => $value) {
-            if (!$this->formData[$value]) {
-                $result = false;
-
-                $this->errors[$value] = 'Заполните это поле';
+            if (!$validator->validate($fieldToValidate)) {
+                $this->errors[$field] = $this->messages[$name];
             }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Заполняет formData данными из формы
-     * @param array $data Данные для заполнения
-     */
-    private function fillFormData($data = [])
-    {
-        if (!$this->isSubmitted()) {
-            return;
-        }
-
-        $fillData = !empty($data) ? $data : array_merge($_POST, $_FILES);
-
-        foreach ($this->fields as $field) {
-            $this->formData[$field] = array_key_exists($field, $fillData) ? $fillData[$field] : null;
         }
     }
 }
