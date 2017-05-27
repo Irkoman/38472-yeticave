@@ -28,7 +28,7 @@ $errors = $formModel->getAllErrors();
         </div>
         <div class="form__item <?= !empty($errors['password']) ? 'form__item--invalid' : '' ?>">
             <label for="password">Пароль*</label>
-            <input id="password" type="text" name="password" placeholder="Введите пароль">
+            <input id="password" type="text" name="password" value="<?= !empty($formdata['password']) ? $formdata['password'] : '' ?>" placeholder="Введите пароль">
             <span class="form__error"><?= !empty($errors['password']) ? $errors['password'] : '' ?></span>
         </div>
         <div class="form__item <?= !empty($errors['name']) ? 'form__item--invalid' : '' ?>">

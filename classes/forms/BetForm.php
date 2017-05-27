@@ -15,8 +15,8 @@ class BetForm extends BaseForm
     protected $fields = ['cost'];
 
     protected $rules = [
-        ['number', ['cost']],
-        ['required', ['cost']],
+        ['notEmpty', ['cost']],
+        ['numeric', ['cost']]
     ];
 
     /**
@@ -41,39 +41,17 @@ class BetForm extends BaseForm
                     'rate' => $formdata['cost']
                 ];
 
-                setcookie("my_bets", json_encode($my_bets), strtotime("+1 month"));
+                setcookie('my_bets', json_encode($my_bets), strtotime('+1 month'));
 
                 $betRecord = new BetRecord();
-                $betRecord->date_add = date("Y-m-d H:i:s");
+                $betRecord->date_add = date('Y-m-d H:i:s');
                 $betRecord->lot_id = $lot_id;
                 $betRecord->user_id = $userdata['id'];
                 $betRecord->rate = $formdata['cost'];
                 $betRecord->insert();
 
-                header("Location: /mylots.php");
+                header('Location: /mylots.php');
             }
         }
-    }
-
-    /**
-     * Проверяет числовые поля на корректность
-     * @param array $fields Список полей для проверки
-     * @return bool Результат проверки
-     */
-    protected function runNumberValidator($fields)
-    {
-        $result = true;
-
-        foreach ($fields as $value) {
-            $field = $this->formData[$value];
-
-            if (!filter_var($field, FILTER_VALIDATE_INT)) {
-                $result = false;
-
-                $this->errors[$value] = "Здесь должно быть число";
-            }
-        }
-
-        return $result;
     }
 }

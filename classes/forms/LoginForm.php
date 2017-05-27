@@ -14,8 +14,10 @@ class LoginForm extends BaseForm
 
     protected $rules = [
         ['email', ['email']],
-        ['required', ['email', 'password']],
+        ['notEmpty', ['email', 'password']]
     ];
+
+    protected $messages = [];
 
     /**
      * Полная проверка формы и создание объекта юзера в случае успеха
@@ -30,27 +32,5 @@ class LoginForm extends BaseForm
                 $this->errors = $userModel->authErrors;
             }
         }
-    }
-
-    /**
-     * Проверяет email на корректность
-     * @param array $fields Список полей для проверки
-     * @return bool Результат проверки
-     */
-    protected function runEmailValidator($fields)
-    {
-        $result = true;
-
-        foreach ($fields as $value) {
-            $field = $this->formData[$value];
-
-            if (!filter_var($field, FILTER_VALIDATE_EMAIL)) {
-                $result = false;
-
-                $this->errors[$value] = 'Введите корректный email';
-            }
-        }
-
-        return $result;
     }
 }
