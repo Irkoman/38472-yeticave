@@ -1,8 +1,8 @@
 <?php
 namespace yeticave\models;
 
-use yeticave\ActiveRecord\Finder\CategoryFinder;
-use yeticave\ActiveRecord\Record\CategoryRecord;
+use yeticave\active_record\finder\CategoryFinder;
+use yeticave\active_record\record\CategoryRecord;
 
 /**
  * Class CategoryModel

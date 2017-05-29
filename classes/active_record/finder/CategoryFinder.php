@@ -1,24 +1,22 @@
 <?php
-namespace yeticave\ActiveRecord\Finder;
+namespace yeticave\active_record\finder;
 
-use yeticave\ActiveRecord\Record\CategoryRecord;
+use yeticave\active_record\record\CategoryRecord;
 
 /**
  * Class CategoryFinder
  */
 class CategoryFinder extends BaseFinder
 {
-    protected $tableName = 'category';
-
     /**
      * Поиск всех действующих категорий
      * @return CategoryRecord[] Массив объектов CategoryRecord
      */
     public function findCategories()
     {
-        $sql = "SELECT * FROM category";
+        $sql = 'SELECT * FROM category';
 
-        $rows = parent::selectAll($sql);
+        $rows = $this->selectAll($sql);
         $records = [];
 
         foreach ($rows as $row) {

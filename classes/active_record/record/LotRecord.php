@@ -1,5 +1,5 @@
 <?php
-namespace yeticave\ActiveRecord\Record;
+namespace yeticave\active_record\record;
 
 /**
  * Class LotRecord

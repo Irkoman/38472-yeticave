@@ -56,10 +56,12 @@ class Formatter
 
         if ($time_in_hours >= 24) {
             return date('d.m.y в H:i', $ts);
-        } elseif ($time_in_hours < 1) {
-            return date('i минут назад', $time);
-        } else {
-            return date('G часов назад', $time);
         }
+
+        if ($time_in_hours < 1) {
+            return date('i минут назад', $time);
+        }
+
+        return date('G часов назад', $time);
     }
 }

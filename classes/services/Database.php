@@ -17,10 +17,15 @@ class Database
     private $error = '';
 
     /**
+     * Объект соединения
+     */
+    private static $instance;
+
+    /**
      * Database constructor
      * Устанавливает соединение
      */
-    public function __construct()
+    private  function __construct()
     {
         $this->link = mysqli_connect('localhost', 'root', '', 'yeticave');
 
@@ -29,6 +34,19 @@ class Database
             header('HTTP/1.1 500 Internal Server Error');
             header('Location: /500.php');
         }
+    }
+
+    /**
+     * Получает объект соединения, если он уже был создан.
+     * Если нет - создаёт его.
+     * @return Database
+     */
+    public static function getInstance() {
+        if (!self::$instance) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
     }
 
     /**
@@ -46,15 +64,15 @@ class Database
      * @param array $data Данные для вставки на место плейсхолдеров
      * @return mysqli_stmt Подготовленное выражение
      */
-    public function getPrepareStmt($sql, $data = [])
+    public function getPrepareStmt($sql, $values = [])
     {
         $stmt = mysqli_prepare($this->link, $sql);
 
-        if ($data) {
+        if ($values) {
             $types = '';
             $stmt_data = [];
 
-            foreach ($data as $value) {
+            foreach ($values as $value) {
                 $type = null;
 
                 if (is_int($value)) {
@@ -135,8 +153,8 @@ class Database
      */
     public function update($table, $updates, $conditions = [])
     {
-        $updatesToString = "";
-        $conditionsToString = "";
+        $updatesToString = '';
+        $conditionsToString = '';
         $values = [];
 
         foreach ($updates as $update) {
@@ -193,18 +211,5 @@ class Database
         } else {
             return false;
         }
-    }
-
-    public function searchUserByEmail($email)
-    {
-        $result = null;
-        $sql = "SELECT * FROM user WHERE email = ? LIMIT 1";
-        $data = $this->select($sql, [$email]);
-
-        if (isset($data[0])) {
-            $result = $data[0];
-        }
-
-        return $result;
     }
 }

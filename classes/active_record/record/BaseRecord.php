@@ -1,5 +1,5 @@
 <?php
-namespace yeticave\ActiveRecord\Record;
+namespace yeticave\active_record\record;
 
 use yeticave\services\Database;
 
@@ -35,7 +35,7 @@ abstract class BaseRecord
 
     /**
      * @param array $row Строка с данными
-     * @return *Record Объект *Record с заполненными полями
+     * @return BaseRecord Объект BaseRecord с заполненными полями
      */
     public function fillRecord($row)
     {
@@ -63,7 +63,7 @@ abstract class BaseRecord
 
         $sql  = 'INSERT INTO ' . $this->getTableName() . ' SET ' . implode(', ', $keys);
 
-        $database = new Database();
+        $database = Database::getInstance();
         $this->id = $database->insert($sql, $values);
     }
 
@@ -81,7 +81,7 @@ abstract class BaseRecord
             }
         }
 
-        $database = new Database();
+        $database = Database::getInstance();
         return $database->update($this->getTableName(), $values, ['id' => $this->id]);
     }
 
@@ -91,7 +91,7 @@ abstract class BaseRecord
      */
     public function delete()
     {
-        $database = new Database();
+        $database = Database::getInstance();
         return $database->delete($this->getTableName(), ['id' => $this->id]);
     }
 

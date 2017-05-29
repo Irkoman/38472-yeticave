@@ -22,7 +22,7 @@ class LoginForm extends BaseForm
     /**
      * Полная проверка формы и создание объекта юзера в случае успеха
      */
-    public function checkLoginForm()
+    public function handleLoginForm()
     {
         if ($this->isSubmitted()) {
             $this->validate();

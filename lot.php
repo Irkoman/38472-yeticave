@@ -14,7 +14,7 @@ $userModel = new UserModel();
 $lotModel = new LotModel();
 $betModel = new BetModel();
 $formModel = new BetForm();
-$formModel->checkBetForm($id);
+$formModel->handleBetForm($id);
 
 $content = [
     'path' => 'views/content/lot.php',

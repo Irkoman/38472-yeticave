@@ -1,15 +1,13 @@
 <?php
-namespace yeticave\ActiveRecord\Finder;
+namespace yeticave\active_record\finder;
 
-use yeticave\ActiveRecord\Record\LotRecord;
+use yeticave\active_record\record\LotRecord;
 
 /**
  * Class LotFinder
  */
 class LotFinder extends BaseFinder
 {
-    protected $tableName = 'lot';
-
     /**
      * Поиск по лотам и смежным таблицам
      * @param int $id
@@ -20,7 +18,7 @@ class LotFinder extends BaseFinder
         $sql = 'SELECT lot.id, lot.title, lot.description, lot.initial_rate, lot.image, lot.date_close, category.name AS category_name
                 FROM lot JOIN category ON lot.category_id = category.id WHERE lot.id = ?';
 
-        $row = parent::selectOne($sql, [$id]);
+        $row = $this->selectOne($sql, [$id]);
 
         if ($row) {
             $record = new LotRecord();
@@ -41,7 +39,7 @@ class LotFinder extends BaseFinder
                 WHERE lot.date_close > NOW() AND lot.winner_id IS NULL
                 ORDER BY lot.date_add DESC LIMIT 6';
 
-        $rows = parent::selectAll($sql);
+        $rows = $this->selectAll($sql);
         $records = [];
 
         foreach ($rows as $row) {

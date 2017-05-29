@@ -1,15 +1,13 @@
 <?php
-namespace yeticave\ActiveRecord\Finder;
+namespace yeticave\active_record\finder;
 
-use yeticave\ActiveRecord\Record\BetRecord;
+use yeticave\active_record\record\BetRecord;
 
 /**
  * Class BetFinder
  */
 class BetFinder extends BaseFinder
 {
-    protected $tableName = 'bet';
-
     /**
      * Поиск ставок для лота по его id
      * @param int $id
@@ -21,7 +19,7 @@ class BetFinder extends BaseFinder
                 FROM bet JOIN user ON bet.user_id = user.id
                 WHERE bet.lot_id = ? ORDER BY bet.date_add DESC LIMIT 5';
 
-        $rows = parent::selectAll($sql, [$id]);
+        $rows = $this->selectAll($sql, [$id]);
         $records = [];
 
         foreach ($rows as $row) {
@@ -43,7 +41,7 @@ class BetFinder extends BaseFinder
                 FROM bet JOIN lot ON lot.id = bet.lot_id JOIN category ON category.id = lot.category_id
                 WHERE bet.user_id = ?';
 
-        $rows = parent::selectAll($sql, [$id]);
+        $rows = $this->selectAll($sql, [$id]);
         $records = [];
 
         foreach ($rows as $row) {

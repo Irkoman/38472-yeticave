@@ -9,7 +9,7 @@ use yeticave\forms\LoginForm;
 $categoryModel = new CategoryModel();
 $userModel = new UserModel();
 $formModel = new LoginForm();
-$formModel->checkLoginForm();
+$formModel->handleLoginForm();
 
 $content = [
     'path' => 'views/content/login.php',

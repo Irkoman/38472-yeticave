@@ -1,8 +1,8 @@
 <?php
 namespace yeticave\models;
 
-use yeticave\ActiveRecord\Finder\LotFinder;
-use yeticave\ActiveRecord\Record\LotRecord;
+use yeticave\active_record\finder\LotFinder;
+use yeticave\active_record\record\LotRecord;
 
 /**
  * Class LotModel

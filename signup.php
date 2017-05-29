@@ -14,7 +14,7 @@ if ($userModel->isAuth()) {
 
 $categoryModel = new CategoryModel();
 $formModel = new SignupForm();
-$formModel->checkSignupForm();
+$formModel->handleSignupForm();
 
 $content = [
     'path' => 'views/content/signup.php',
