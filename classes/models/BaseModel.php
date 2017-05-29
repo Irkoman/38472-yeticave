@@ -7,12 +7,12 @@ namespace yeticave\models;
 abstract class BaseModel
 {
     /**
-     * @var *Finder $finder Объект для поиска данных
+     * @var BaseFinder $finder Объект для поиска данных
      */
     public $finder;
 
     /**
-     * @var *Record $record Объект для записи данных
+     * @var BaseRecord $record Объект для записи данных
      */
     public $record;
 }

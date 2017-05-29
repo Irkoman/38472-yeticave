@@ -1,8 +1,8 @@
 <?php
 namespace yeticave\models;
 
-use yeticave\ActiveRecord\Finder\BetFinder;
-use yeticave\ActiveRecord\Record\BetRecord;
+use yeticave\active_record\finder\BetFinder;
+use yeticave\active_record\record\BetRecord;
 
 /**
  * Class BetModel

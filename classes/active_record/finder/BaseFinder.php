@@ -1,5 +1,5 @@
 <?php
-namespace yeticave\ActiveRecord\Finder;
+namespace yeticave\active_record\finder;
 
 use yeticave\services\Database;
 
@@ -10,11 +10,6 @@ use yeticave\services\Database;
  */
 abstract class BaseFinder
 {
-    /**
-     * @var string $tableName Имя таблицы
-     */
-    protected $tableName;
-
     /**
      * @var mysqli $database Объект класса Database
      */
@@ -27,7 +22,7 @@ abstract class BaseFinder
      */
     public function __construct()
     {
-        $this->database = new Database();
+        $this->database = Database::getInstance();
     }
 
     /**
@@ -38,8 +33,13 @@ abstract class BaseFinder
      */
     public static function selectOne($sql, $data = [])
     {
-        $database = new Database();
-        return $database->select($sql, $data)[0];
+        $database = Database::getInstance();
+        $rows = $database->select($sql, $data);
+        if ($rows) {
+            return $rows[0];
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -50,7 +50,7 @@ abstract class BaseFinder
      */
     public static function selectAll($sql, $data = [])
     {
-        $database = new Database();
+        $database = Database::getInstance();
         return $database->select($sql, $data);
     }
 }

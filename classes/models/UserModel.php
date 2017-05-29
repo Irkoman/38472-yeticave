@@ -1,9 +1,8 @@
 <?php
 namespace yeticave\models;
 
-use yeticave\services\Database;
-use yeticave\ActiveRecord\Finder\UserFinder;
-use yeticave\ActiveRecord\Record\UserRecord;
+use yeticave\active_record\finder\UserFinder;
+use yeticave\active_record\record\UserRecord;
 
 /**
  * Class UserModel
@@ -21,13 +20,7 @@ class UserModel extends BaseModel
     public $authErrors = [];
 
     /**
-     * @var database $database
-     */
-    private $database;
-
-    /**
      * User constructor
-     * @param database $database Объект класса Database
      * @param string $email Почта
      * @param string $password Пароль
      */
@@ -35,8 +28,16 @@ class UserModel extends BaseModel
     {
         $this->finder = new UserFinder();
         $this->record = new UserRecord();
-        $this->database = new Database();
+        $this->recognizeUser($email, $password);
+    }
 
+    /**
+     * На основе наличия почты и пароля, логинит или определяет
+     * аутентифицированность
+     * @return array|bool
+     */
+    public function recognizeUser($email, $password)
+    {
         if ($email && $password) {
             $this->login($email, $password);
         } else {
@@ -64,12 +65,20 @@ class UserModel extends BaseModel
      */
     public function login($email, $password)
     {
-        if ($user = $this->database->searchUserByEmail($email)) {
-            if (password_verify($password, $user['password'])) {
-                $this->userdata = $user;
-                $_SESSION['user'] = $user;
+        if ($userRecord = $this->finder->findUserByEmail($email)) {
+            if (password_verify($password, $userRecord->password)) {
+                $this->userdata = [
+                    'id'       => $userRecord->id,
+                    'email'    => $userRecord->email,
+                    'password' => $userRecord->password,
+                    'name'     => $userRecord->name,
+                    'avatar'   => $userRecord->avatar,
+                    'contact'  => $userRecord->contact,
+                    'date_add' => $userRecord->date_add
+                ];
+                $_SESSION['user'] = $this->userdata;
                 header('Location: /index.php');
-                return $user;
+                return $this->userdata;
             } else {
                 $this->authErrors['password'] = 'Вы ввели неверный пароль';
             }

@@ -15,7 +15,7 @@ if (!$userModel->isAuth()) {
 
 $categoryModel = new CategoryModel();
 $formModel = new LotForm();
-$formModel->checkLotForm();
+$formModel->handleLotForm();
 
 $content = [
     'path' => 'views/content/add.php',
